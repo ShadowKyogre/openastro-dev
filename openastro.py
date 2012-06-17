@@ -39,9 +39,9 @@ from string import Template
 from xml.dom.minidom import parseString
 
 #GTK, cairo to display svg
-import pygtk
-pygtk.require('2.0')
-import gtk
+
+from gi.repository import Gtk as gtk
+from gi.repository import Gdk as gdk
 import cairo
 import rsvg
 
@@ -1090,7 +1090,7 @@ class openAstroInstance:
 	def __init__(self):
 		
 		#screen size
-		displayManager = gtk.gdk.display_manager_get()
+		displayManager = gdk.DisplayManager.get()
 		display = displayManager.get_default_display()
 		screen = display.get_default_screen()
 		self.screen_width = screen.get_width()
@@ -2696,7 +2696,7 @@ class openAstroInstance:
 class mainWindow:
 	def __init__(self):
 		#gtktopwindow
-		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
 		self.window.connect("destroy", lambda w: gtk.main_quit())
 		self.window.set_title("OpenAstro.org")
 		self.window.set_icon_from_file(cfg.iconWindow)
@@ -2774,7 +2774,7 @@ class mainWindow:
 		self.draw.setSVG(self.tempfilename)
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.add_with_viewport(self.draw)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 		self.vbox.pack_start(scrolledwindow)
 	
 		self.window.add(self.vbox)
@@ -2795,8 +2795,8 @@ class mainWindow:
 	""" Extra Menu Items Functions (extraExportDB, extraImportDB) """
 	
 	def extraExportDB(self, widget):
-		chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_SAVE,gtk.RESPONSE_OK))
+		chooser = gtk.FileChooserDialog(title=None,action=gtk.FileChooserAction.SAVE,
+                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		chooser.set_current_name('openastro-database.sql')
 		filter = gtk.FileFilter()
@@ -2805,16 +2805,16 @@ class mainWindow:
 		chooser.add_filter(filter)
 		response = chooser.run()
 		
-		if response == gtk.RESPONSE_OK:
+		if response == gtk.ResponseType.OK:
 			copyfile(cfg.peopledb, chooser.get_filename())
 
-		elif response == gtk.RESPONSE_CANCEL:
+		elif response == gtk.ResponseType.CANCEL:
 					dprint('Dialog closed, no files selected')	
 		chooser.destroy()
 	
 	def extraImportDB(self, widget):
-		chooser = gtk.FileChooserDialog(title=_("Please select database to import"),action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+		chooser = gtk.FileChooserDialog(title=_("Please select database to import"),action=gtk.FileChooserAction.OPEN,
+                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_OPEN,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		filter = gtk.FileFilter()
 		filter.set_name(_("OpenAstro.org Databases (*.sql)"))
@@ -2822,10 +2822,10 @@ class mainWindow:
 		chooser.add_filter(filter)
 		response = chooser.run()
 		
-		if response == gtk.RESPONSE_OK:
+		if response == gtk.ResponseType.OK:
 			db.databaseMerge(cfg.peopledb,chooser.get_filename())
 
-		elif response == gtk.RESPONSE_CANCEL:
+		elif response == gtk.ResponseType.CANCEL:
 					dprint('Dialog closed, no files selected')	
 		chooser.destroy()			
 
@@ -2895,8 +2895,8 @@ class mainWindow:
 		
 	def doExport(self, widget):
 
-		chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_SAVE,gtk.RESPONSE_OK))
+		chooser = gtk.FileChooserDialog(title=None,action=gtk.FileChooserAction.SAVE,
+                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		
 		filter = gtk.FileFilter()
@@ -2930,7 +2930,7 @@ class mainWindow:
 		
 		response = chooser.run()
 		
-		if response == gtk.RESPONSE_OK:
+		if response == gtk.ResponseType.OK:
 			if widget.get_name() == 'exportSVG':
 				copyfile(cfg.tempfilename, chooser.get_filename())
 			elif widget.get_name() == 'exportPNG':
@@ -2939,7 +2939,7 @@ class mainWindow:
 				os.system("%s %s %s" % ('convert',cfg.tempfilename,"'"+chooser.get_filename()+"'"))
 			elif widget.get_name() == 'exportXML':
 				openAstro.exportOAC(chooser.get_filename())
-		elif response == gtk.RESPONSE_CANCEL:
+		elif response == gtk.ResponseType.CANCEL:
 					dprint('Dialog closed, no files selected')
 			
 		chooser.destroy()
@@ -2947,8 +2947,8 @@ class mainWindow:
 	
 	def doImport(self, widget):
 	
-		chooser = gtk.FileChooserDialog(title=_('Select file to open'),action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+		chooser = gtk.FileChooserDialog(title=_('Select file to open'),action=gtk.FileChooserAction.OPEN,
+                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_OPEN,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		
 		filter = gtk.FileFilter()
@@ -2972,7 +2972,7 @@ class mainWindow:
 		chooser.add_filter(filter)		
 		response = chooser.run()
 		
-		if response == gtk.RESPONSE_OK:
+		if response == gtk.ResponseType.OK:
 			if widget.get_name() == 'importXML':
 				openAstro.importOAC(chooser.get_filename())
 			elif widget.get_name() == 'importOroboros':
@@ -2984,7 +2984,7 @@ class mainWindow:
 			elif widget.get_name() == 'importZet8':
 				openAstro.importZet8(chooser.get_filename())			
 			self.updateChart()
-		elif response == gtk.RESPONSE_CANCEL:
+		elif response == gtk.ResponseType.CANCEL:
 					dprint('Dialog closed, no files selected')
 		chooser.destroy()
 		return
@@ -3041,8 +3041,9 @@ class mainWindow:
 
 		#options
 		table.attach(gtk.Label(_("Select year for Solar Return")), 0, 1, 0, 1, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
-		entry=gtk.Entry(4)
-		entry.set_width_chars(4) 
+		entry=gtk.Entry()
+		entry.set_width_chars(4)
+		entry.set_max_length(4) 
 		entry.set_text(str(datetime.datetime.now().year))
 		table.attach(entry, 1, 2, 0, 1, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
 		
@@ -3050,14 +3051,14 @@ class mainWindow:
 		self.win_SS.vbox.pack_start(table, True, True, 0)
 		
 		#ok button
-		button = gtk.Button(stock=gtk.STOCK_OK)
+		button = gtk.Button.new_from_stock(gtk.STOCK_OK)
 		button.connect("clicked", self.specialSolarSubmit, entry)
-		button.set_flags(gtk.CAN_DEFAULT)		
+		button.set_activates_default(True)		
 		self.win_SS.action_area.pack_start(button, True, True, 0)
 		button.grab_default()		
 
 		#cancel button
-		button = gtk.Button(stock=gtk.STOCK_CANCEL)
+		button = gtk.Button.new_from_stock(gtk.STOCK_CANCEL)
 		button.connect("clicked", lambda w: self.win_SS.destroy())
 		self.win_SS.action_area.pack_start(button, True, True, 0)
 
@@ -3088,34 +3089,36 @@ class mainWindow:
 		table.set_border_width(10)
 
 		#options
-		table.attach(gtk.Label(_("Select date for Secondary Progression")+":"), 0, 1, 0, 1, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10, ypadding=10)
+		table.attach(gtk.Label(_("Select date for Secondary Progression")+":"), 0, 1, 0, 1, 
+			xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10, ypadding=10)
 		hbox = gtk.HBox(spacing=4)  # pack_start(child, expand=True, fill=True, padding=0)
 		entry={}
 		
-		hbox.pack_start(gtk.Label(_('Year')+": "))	
+		hbox.pack_start(gtk.Label(_('Year')+": "),True,True,True)	
 		entry['Y']=gtk.Entry(4)
 		entry['Y'].set_width_chars(4) 
 		entry['Y'].set_text(str(datetime.datetime.now().year))
 		hbox.pack_start(entry['Y'])
-		hbox.pack_start(gtk.Label(_('Month')+": "))	
+		hbox.pack_start(gtk.Label(_('Month')+": "),True,True,True)	
 		entry['M']=gtk.Entry(2)
 		entry['M'].set_width_chars(2) 
 		entry['M'].set_text('%02d'%(datetime.datetime.now().month))
 		hbox.pack_start(entry['M'])
-		hbox.pack_start(gtk.Label(_('Day')+": "))	
+		hbox.pack_start(gtk.Label(_('Day')+": "),True,True,True)	
 		entry['D']=gtk.Entry(2)
 		entry['D'].set_width_chars(2) 
 		entry['D'].set_text(str(datetime.datetime.now().day))
 		hbox.pack_start(entry['D'])	
-		table.attach(hbox,0,1,1,2, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10, ypadding=10)
+		table.attach(hbox,0,1,1,2, xoptions=gtk.AttachOptions.SHRINK, 
+			yoptions=gtk.AttachOptions.SHRINK, xpadding=10, ypadding=10)
 		
 		hbox = gtk.HBox(spacing=4)
-		hbox.pack_start(gtk.Label(_('Hour')+": "))	
+		hbox.pack_start(gtk.Label(_('Hour')+": "),True,True,True)	
 		entry['h']=gtk.Entry(2)
 		entry['h'].set_width_chars(2) 
 		entry['h'].set_text('%02d'%(datetime.datetime.now().hour))
 		hbox.pack_start(entry['h'])
-		hbox.pack_start(gtk.Label(_('Min')+": "))	
+		hbox.pack_start(gtk.Label(_('Min')+": "),True,True,True)
 		entry['m']=gtk.Entry(2)
 		entry['m'].set_width_chars(2) 
 		entry['m'].set_text('%02d'%(datetime.datetime.now().minute))
@@ -3150,20 +3153,20 @@ class mainWindow:
 	def tableMonthlyTimeline(self, widget):
 		dialog = gtk.Dialog(_("Select Month"),
                      self.window,
-                     gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                     (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                      gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+                     gtk.DialogFlags.MODAL | gtk.DialogFlags.DESTROY_WITH_PARENT,
+                     (gtk.STOCK_CANCEL, gtk.ResponseType.REJECT,
+                      gtk.STOCK_OK, gtk.ResponseType.ACCEPT))
 
 		dialog.connect("destroy", lambda w: dialog.destroy())
 		dialog.set_size_request(200, 200)
 		dialog.move(50,50)
 		self.tMTentry={}
-		dialog.vbox.pack_start(gtk.Label(_('Year')+": "))	
+		dialog.vbox.pack_start(gtk.Label(_('Year')+": "),True,True,True)	
 		self.tMTentry['Y']=gtk.Entry(4)
 		self.tMTentry['Y'].set_width_chars(4) 
 		self.tMTentry['Y'].set_text(str(datetime.datetime.now().year))
 		dialog.vbox.pack_start(self.tMTentry['Y'], False, False, 0)
-		dialog.vbox.pack_start(gtk.Label(_('Month')+": "))	
+		dialog.vbox.pack_start(gtk.Label(_('Month')+": "),True,True,True)	
 		self.tMTentry['M']=gtk.Entry(2)
 		self.tMTentry['M'].set_width_chars(2) 
 		self.tMTentry['M'].set_text('%02d'%(datetime.datetime.now().month))
@@ -3171,7 +3174,7 @@ class mainWindow:
 		dialog.show_all()
 		
 		ret = dialog.run()
-		if ret == gtk.RESPONSE_ACCEPT:
+		if ret == gtk.ResponseType.ACCEPT:
 			dialog.destroy()
 			self.tableMonthlyTimelineShow()
 		else:
@@ -3181,15 +3184,15 @@ class mainWindow:
 	def tableMonthlyTimelinePrint(self, pages, pdf, window, name):
 		settings = None
 		print_op = gtk.PrintOperation()
-		print_op.set_unit(gtk.UNIT_PIXEL)
+		print_op.set_unit(gtk.Unit.PIXEL)
 		if settings != None: 
 			print_op.set_print_settings(settings)
 		print_op.connect("begin_print", self.tableMonthlyTimelinePrintBegin, pages)
 		print_op.connect("draw_page", self.tableMonthlyTimelinePrintDraw)
 
 		if pdf:
-			chooser = gtk.FileChooserDialog(title=_("Select Export Filename"),action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_SAVE,gtk.RESPONSE_OK))
+			chooser = gtk.FileChooserDialog(title=_("Select Export Filename"),action=gtk.FileChooserAction.SAVE,
+                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
 			chooser.set_current_folder(cfg.homedir)
 			chooser.set_current_folder(cfg.homedir)
 			chooser.set_current_name(name)
@@ -3198,30 +3201,31 @@ class mainWindow:
 			filter.add_pattern("*.pdf")
 			chooser.add_filter(filter)
 			response = chooser.run()
-			if response == gtk.RESPONSE_OK:
+			if response == gtk.ResponseType.OK:
 				print_op.set_export_filename(chooser.get_filename())
 				chooser.destroy()
-				res = print_op.run(gtk.PRINT_OPERATION_ACTION_EXPORT, window)	
+				res = print_op.run(gtk.PrintOperationAction.EXPORT, window)	
 			else:
 				chooser.destroy()
 				print_op.cancel()
 				res = None
 			
 		else:
-			res = print_op.run(gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG, window)		
+			res = print_op.run(gtk.PrintOperationAction.PRINT_DIALOG, window)		
 
-		if res == gtk.PRINT_OPERATION_RESULT_ERROR:
-			error_dialog = gtk.MessageDialog(window,gtk.DIALOG_DESTROY_WITH_PARENT,gtk.MESSAGE_ERROR,gtk.BUTTONS_CLOSE,"Error printing:\n")
+		if res == gtk.PrintOperationResult.ERROR:
+			error_dialog = gtk.MessageDialog(window,gtk.DialogFlags.DESTROY_WITH_PARENT,
+				gtk.MessageType.ERROR,gtk.ButtonsType.CLOSE,"Error printing:\n")
 			error_dialog.connect("response", lambda w,id: w.destroy())
 			error_dialog.show()
-		elif res == gtk.PRINT_OPERATION_RESULT_APPLY:
+		elif res == gtk.PrintOperationResult.APPLY:
 			settings = print_op.get_print_settings()
 
 	def tableMonthlyTimelinePrintBegin(self, operation, context, pages):
 		operation.set_n_pages(pages)
 		operation.set_use_full_page(False)
 		ps = gtk.PageSetup()
-		ps.set_orientation(gtk.PAGE_ORIENTATION_PORTRAIT)
+		ps.set_orientation(gtk.PageOrientation.PORTRAIT)
 		ps.set_paper_size(gtk.PaperSize(gtk.PAPER_NAME_A4))
 		operation.set_default_page_setup(ps)
 	
@@ -3436,7 +3440,7 @@ class mainWindow:
 		f.close()
 		
 		if printing == None:
-			self.win_TMT = gtk.Window(gtk.WINDOW_TOPLEVEL)
+			self.win_TMT = gtk.Window(gtk.WindowType.TOPLEVEL)
 			self.win_TMT.connect("destroy", lambda w: self.win_TMT.destroy())
 			self.win_TMT.set_title("OpenAstro.org Timeline")
 			self.win_TMT.set_icon_from_file(cfg.iconWindow)
@@ -3446,16 +3450,16 @@ class mainWindow:
 			hbox = gtk.HBox()
 			button = gtk.Button(_('Print'))
 			button.connect("clicked", lambda w: self.tableMonthlyTimelinePrint(pages,pdf=False,window=self.win_TMT,name="timeline-%s.pdf"%(openAstro.name)))
-			hbox.pack_start(button,False,False)
+			hbox.pack_start(button,False,False,True)
 			button = gtk.Button(_('Save as PDF'))
 			button.connect("clicked", lambda w: self.tableMonthlyTimelinePrint(pages,pdf=True,window=self.win_TMT,name="timeline-%s.pdf"%(openAstro.name)))
-			hbox.pack_start(button,False,False)
-			vbox.pack_start(hbox,False,False)
+			hbox.pack_start(button,False,False,True)
+			vbox.pack_start(hbox,False,False,True)
 			draw = drawSVG()
 			draw.setSVG(cfg.tempfilenametable)
 			scrolledwindow = gtk.ScrolledWindow()
 			scrolledwindow.add_with_viewport(draw)
-			scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+			scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 			vbox.pack_start(scrolledwindow)
 		
 			self.win_TMT.add(vbox)
@@ -3609,7 +3613,7 @@ class mainWindow:
 
 		#display svg
 		if printing == None:
-			self.win_TCA = gtk.Window(gtk.WINDOW_TOPLEVEL)
+			self.win_TCA = gtk.Window(gtk.WindowType.TOPLEVEL)
 			self.win_TCA.connect("destroy", lambda w: self.win_TCA.destroy())
 			self.win_TCA.set_title("OpenAstro.org Cusp Aspects")
 			self.win_TCA.set_icon_from_file(cfg.iconWindow)
@@ -3619,23 +3623,23 @@ class mainWindow:
 			hbox = gtk.HBox()
 			button = gtk.Button(_('Print'))
 			button.connect("clicked", lambda w: self.tableMonthlyTimelinePrint(pages=1,pdf=False,window=self.win_TCA,name="cusp-aspects-%s.pdf"%(openAstro.name)))
-			hbox.pack_start(button,False,False)
+			hbox.pack_start(button,False,False,True)
 			button = gtk.Button(_('Save as PDF'))
 			button.connect("clicked", lambda w: self.tableMonthlyTimelinePrint(pages=1,pdf=True,window=self.win_TCA,name="cusp-aspects-%s.pdf"%(openAstro.name)))
-			hbox.pack_start(button,False,False)
-			vbox.pack_start(hbox,False,False)
+			hbox.pack_start(button,False,False,True)
+			vbox.pack_start(hbox,False,False,True)
 			draw = drawSVG()
 			draw.setSVG(cfg.tempfilenametable)
 			scrolledwindow = gtk.ScrolledWindow()
 			scrolledwindow.add_with_viewport(draw)
-			scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+			scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 			vbox.pack_start(scrolledwindow)
 			self.win_TCA.add(vbox)
 			self.win_TCA.show_all()		
 		return
 		
 	def aboutInfo(self, widget):
-		dialog=gtk.Dialog('Info',self.window,0,(gtk.STOCK_OK, gtk.RESPONSE_DELETE_EVENT))
+		dialog=gtk.Dialog('Info',self.window,0,(gtk.STOCK_OK, gtk.ResponseType.DELETE_EVENT))
 		dialog.set_icon_from_file(cfg.iconWindow)
 		dialog.connect("response", lambda w,e: dialog.destroy())				
 		dialog.connect("close", lambda w,e: dialog.destroy())
@@ -3670,7 +3674,7 @@ class mainWindow:
 		return		
 			
 	def openDatabase(self, widget, extraDB=None):
-		self.win_OD = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win_OD = gtk.Window(gtk.WindowType.TOPLEVEL)
 		self.win_OD.set_icon_from_file(cfg.iconWindow)
 		self.win_OD.set_title(_('Open Database Entry'))
 		self.win_OD.set_size_request(600, 450)
@@ -3681,7 +3685,7 @@ class mainWindow:
 		self.win_OD_treeview = gtk.TreeView(self.listmodel)
 		#selection
 		self.win_OD_selection = self.win_OD_treeview.get_selection()
-		self.win_OD_selection.set_mode(gtk.SELECTION_SINGLE)
+		self.win_OD_selection.set_mode(gtk.SelectionMode.SINGLE)
 		#treeview columns		
 		self.win_OD_tvcolumn0 = gtk.TreeViewColumn(_('Name'))
 		self.win_OD_tvcolumn1 = gtk.TreeViewColumn(_('Birth Date (Local)'))
@@ -3725,7 +3729,7 @@ class mainWindow:
 		#add treeview to scrolledwindow
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.add(self.win_OD_treeview)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.ALWAYS)
 		vbox=gtk.VBox()
 		vbox.pack_start(scrolledwindow)
 		hbox=gtk.HBox(False,4)		
@@ -3776,7 +3780,7 @@ class mainWindow:
 	
 	def openDatabaseSelect(self, selectstr, type):
 	
-		self.win_OD = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win_OD = gtk.Window(gtk.WindowType.TOPLEVEL)
 		self.win_OD.set_icon_from_file(cfg.iconWindow)
 		self.win_OD.set_title(_('Select Database Entry'))
 		self.win_OD.set_size_request(400, 450)
@@ -3788,7 +3792,7 @@ class mainWindow:
 		
 		#selection
 		self.win_OD_selection = self.win_OD_treeview.get_selection()
-		self.win_OD_selection.set_mode(gtk.SELECTION_SINGLE)
+		self.win_OD_selection.set_mode(gtk.SelectionMode.SINGLE)
 		#treeview columns		
 		self.win_OD_tvcolumn0 = gtk.TreeViewColumn(_('Name'))
 		self.win_OD_tvcolumn1 = gtk.TreeViewColumn(_('Birth Date (Local)'))
@@ -3825,7 +3829,7 @@ class mainWindow:
 		#add treeview to scrolledwindow
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.add(self.win_OD_treeview)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.ALWAYS)
 		vbox=gtk.VBox()
 		vbox.pack_start(scrolledwindow)
 		hbox=gtk.HBox()		
@@ -3953,7 +3957,7 @@ class mainWindow:
 			if self.DB[i]["id"] == model.get_value(iter,3):
 				self.ODDlist = self.DB[i]
 		name = self.ODDlist["name"]
-		dialog=gtk.Dialog(_('Question'),self.win_OD,gtk.DIALOG_DESTROY_WITH_PARENT,(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+		dialog=gtk.Dialog(_('Question'),self.win_OD,gtk.DialogFlags.DESTROY_WITH_PARENT,(gtk.STOCK_CANCEL, gtk.ResponseType.REJECT, gtk.STOCK_OK, gtk.ResponseType.ACCEPT))
 		dialog.connect("close", lambda w,e: dialog.destroy())
 		dialog.connect("response",self.openDatabaseDelDo)
 		dialog.vbox.pack_start(gtk.Label(_('Are you sure you want to delete')+' '+name+'?'),True,True,0)
@@ -3961,7 +3965,7 @@ class mainWindow:
 		return
 	
 	def openDatabaseDelDo(self, widget, response_id):
-		if response_id == gtk.RESPONSE_ACCEPT:
+		if response_id == gtk.ResponseType.ACCEPT:
 			#get id from selection
 			del_id = self.ODDlist["id"]
 			#delete database entry
@@ -4008,7 +4012,7 @@ class mainWindow:
 		en = db.getDatabase()
 		for i in range(len(en)):
 			if en[i]["name"] == self.name.get_text() and self.oDE_list["id"] != en[i]["id"]:
-				dialog=gtk.Dialog(_('Duplicate'),self.window2,0,(gtk.STOCK_OK, gtk.RESPONSE_DELETE_EVENT))
+				dialog=gtk.Dialog(_('Duplicate'),self.window2,0,(gtk.STOCK_OK, gtk.ResponseType.DELETE_EVENT))
 				dialog.set_icon_from_file(cfg.iconWindow)			
 				dialog.connect("response", lambda w,e: dialog.destroy())				
 				dialog.connect("close", lambda w,e: dialog.destroy())
@@ -4016,7 +4020,7 @@ class mainWindow:
 				dialog.show_all()				
 				return
 		#ask for confirmation
-		dialog=gtk.Dialog(_('Question'),self.window2,gtk.DIALOG_DESTROY_WITH_PARENT,(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+		dialog=gtk.Dialog(_('Question'),self.window2,gtk.DialogFlags.DESTROY_WITH_PARENT,(gtk.STOCK_CANCEL, gtk.ResponseType.REJECT, gtk.STOCK_OK, gtk.ResponseType.ACCEPT))
 		dialog.set_icon_from_file(cfg.iconWindow)
 		dialog.connect("close", lambda w,e: dialog.destroy())
 		dialog.connect("response",self.openDatabaseEditSave)
@@ -4025,7 +4029,7 @@ class mainWindow:
 		return	
 	
 	def openDatabaseEditSave(self, widget, response_id):
-		if response_id == gtk.RESPONSE_ACCEPT:
+		if response_id == gtk.ResponseType.ACCEPT:
 			#update chart data
 			self.updateChartData()
 			#set query to save			
@@ -4058,26 +4062,26 @@ class mainWindow:
 		print_op.connect("begin_print", self.doPrintBegin)
 		print_op.connect("draw_page", self.doPrintDraw)
 		print_op.set_export_filename("/tmp/OAOUT.pdf")
-		res = print_op.run(gtk.PRINT_OPERATION_ACTION_EXPORT, self.window)
-		#res = print_op.run(gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG, self.window)
+		res = print_op.run(gtk.PrintOperationAction.EXPORT, self.window)
+		#res = print_op.run(gtk.PrintOperationAction.PRINT_DIALOG, self.window)
 		
-		if res == gtk.PRINT_OPERATION_RESULT_ERROR:
+		if res == gtk.PrintOperationResult.ERROR:
 			error_dialog = gtk.MessageDialog(parent,
-                                          gtk.DIALOG_DESTROY_WITH_PARENT,
-                                          gtk.MESSAGE_ERROR,
-      					  gtk.BUTTONS_CLOSE,
+                                          gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                          gtk.MessageType.ERROR,
+      					  gtk.ButtonsType.CLOSE,
       					  "Error printing:\n")
 			error_dialog.connect("response", lambda w,id: w.destroy())
 			error_dialog.show()
 			
-		elif res == gtk.PRINT_OPERATION_RESULT_APPLY:
+		elif res == gtk.PrintOperationResult.APPLY:
 			self.print_settings = print_op.get_print_settings()
 			
 		#gtkunixprint
 		import gtkunixprint
 		gup = gtkunixprint.PrintUnixDialog("Printing OpenAstro.org",self.window)
 		res = gup.run()
-		if res == gtk.RESPONSE_OK:
+		if res == gtk.ResponseType.OK:
 			#print button
 			printer = gup.get_selected_printer()
 			settings = gup.get_settings()
@@ -4112,7 +4116,7 @@ class mainWindow:
 			
 			gup.destroy()		
 			
-		elif res == gtk.RESPONSE_APPLY:
+		elif res == gtk.ResponseType.APPLY:
 			#print preview button
 			print "print preview button?"
 			gup.destroy()
@@ -4124,7 +4128,7 @@ class mainWindow:
 		operation.set_n_pages(1)
 		operation.set_use_full_page(False)
 		ps = gtk.PageSetup()
-		ps.set_orientation(gtk.PAGE_ORIENTATION_PORTRAIT)
+		ps.set_orientation(gtk.PageOrientation.PORTRAIT)
 		ps.set_paper_size_and_default_margins(gtk.PaperSize(gtk.PAPER_NAME_A4))
 
 		if self.print_settings is None:
@@ -4336,7 +4340,7 @@ class mainWindow:
 		#make the ui layout with ok button
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.set_border_width(5)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 		self.win_SC.vbox.pack_start(scrolledwindow, True, True, 0)
 		scrolledwindow.add_with_viewport(table)
 		
@@ -4410,7 +4414,7 @@ class mainWindow:
 		# enable settingslocationmode
 		self.settingsLocationMode = True
 		# create a new window
-		self.win_SL = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win_SL = gtk.Window(gtk.WindowType.TOPLEVEL)
 		self.win_SL.set_icon_from_file(cfg.iconWindow)
 		self.win_SL.set_title(_("Please Set Your Home Location"))
 		self.win_SL.connect("delete_event", lambda w,e: self.settingsLocationDestroy())
@@ -4679,7 +4683,7 @@ class mainWindow:
 		#make the ui layout with ok button
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.set_border_width(5)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 		self.win_SA.vbox.pack_start(scrolledwindow, True, True, 0)
 		scrolledwindow.add_with_viewport(table)
 		
@@ -4808,7 +4812,7 @@ class mainWindow:
 		#make the ui layout with ok button
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.set_border_width(5)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 		self.win_SP.vbox.pack_start(scrolledwindow, True, True, 0)
 		scrolledwindow.add_with_viewport(table)
 		
@@ -5062,7 +5066,7 @@ class mainWindow:
 		#make the ui layout with ok button
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.set_border_width(5)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 		self.win_SC.vbox.pack_start(scrolledwindow, True, True, 0)
 		scrolledwindow.add_with_viewport(table)
 		
@@ -5089,7 +5093,7 @@ class mainWindow:
 		colorsel.set_current_color(input_color)
 		colorsel.set_has_palette(True)
 		response = self.colorseldlg.run()
-		if response == gtk.RESPONSE_OK:
+		if response == gtk.ResponseType.OK:
 			output_color = colorsel.get_current_color()
 			r=int( output_color.red / 257 )
 			g=int( output_color.green / 257 )
@@ -5165,7 +5169,7 @@ class mainWindow:
 		#make the ui layout with ok button
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.set_border_width(5)
-		scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
 		self.win_SL.vbox.pack_start(scrolledwindow, True, True, 0)
 		scrolledwindow.add_with_viewport(table)
 		
@@ -5404,7 +5408,7 @@ class mainWindow:
 
 	def eventData(self, widget, edit=False):
 		# create a new window
-		self.window2 = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.window2 = gtk.Window(gtk.WindowType.TOPLEVEL)
 		self.window2.set_icon_from_file(cfg.iconWindow)
 		self.window2.set_title(_("Edit Event Details"))
 		self.window2.connect("delete_event", lambda w,e: self.window2.destroy())
@@ -5814,7 +5818,7 @@ class mainWindow:
 		en = db.getDatabase()
 		for i in range(len(en)):
 			if en[i]["name"] == self.name.get_text():
-				dialog=gtk.Dialog(_('Duplicate'),self.window2,0,(gtk.STOCK_OK, gtk.RESPONSE_DELETE_EVENT))
+				dialog=gtk.Dialog(_('Duplicate'),self.window2,0,(gtk.STOCK_OK, gtk.ResponseType.DELETE_EVENT))
 				dialog.set_icon_from_file(cfg.iconWindow)			
 				dialog.connect("response", lambda w,e: dialog.destroy())				
 				dialog.connect("close", lambda w,e: dialog.destroy())
@@ -5822,7 +5826,7 @@ class mainWindow:
 				dialog.show_all()				
 				return
 		#ask for confirmation
-		dialog=gtk.Dialog(_('Question'),self.window2,gtk.DIALOG_DESTROY_WITH_PARENT,(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+		dialog=gtk.Dialog(_('Question'),self.window2,gtk.DialogFlags.DESTROY_WITH_PARENT,(gtk.STOCK_CANCEL, gtk.ResponseType.REJECT, gtk.STOCK_OK, gtk.ResponseType.ACCEPT))
 		dialog.set_icon_from_file(cfg.iconWindow)
 		dialog.connect("close", lambda w,e: dialog.destroy())
 		dialog.connect("response",self.eventDataSave)
@@ -5831,7 +5835,7 @@ class mainWindow:
 		return	
 	
 	def eventDataSave(self, widget, response_id):
-		if response_id == gtk.RESPONSE_ACCEPT:
+		if response_id == gtk.ResponseType.ACCEPT:
 			#update chart data
 			self.updateChartData()
 			#set query to save
