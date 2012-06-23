@@ -5904,32 +5904,22 @@ class mainWindow:
 class drawSVG(gtk.DrawingArea):
 	def __init__(self):
 		super(drawSVG, self).__init__()
-		self.connect("configure-event", self.exposeEvent)
+		self.svg = rsvg.Handle()
+		self.connect("draw", self.drawMe)
 
 	def setSVG(self,svg):
-		#self.svg = rsvg.Handle(svg)
 		self.svg = rsvg.Handle.new_from_file(svg)
-		self.emit("configure-event",gdk.Event(gdk.EventType.EXPOSE))
-		width=self.svg.props.width*openAstro.zoom
-		height=self.svg.props.height*openAstro.zoom
+		width = self.svg.props.width*openAstro.zoom
+		height = self.svg.props.height*openAstro.zoom
 		self.set_size_request(int(width),int(height))
 		dprint('drawSVG.setSVG file %s' % (svg))
 
-	def exposeEvent(self,widget,event):
-		try:
-			dprint("Creating cairo context.")
-			context = self.window.cairo_create()
-			
-		except AttributeError:
-			dprint("Already made cairo context.")
-			return True
-
+	def drawMe(self, widget, cr):
 		if self.svg != None:
-			#set a clip region for the expose event
 			dprint("Trying to render svg now.")
-			context.rectangle(event.area.x, event.area.y,event.area.width, event.area.height)
-			context.clip()
-			self.svg.render_cairo(context)
+			suc = self.svg.render_cairo(cr)
+			dprint("Drawing succeeded? {}".format(suc))
+			return False
 
 #debug print function
 def dprint(s):
