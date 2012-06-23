@@ -2296,6 +2296,8 @@ class openAstroInstance:
 				end=self.t_planets_degree_ut[x]
 				diff=float(self.degreeDiff(start,end))
 				#loop orbs
+				dprint(self.planets[i]['name'],self.planets[x]['name'])
+				dprint(self.planets[i]['visible'],self.planets[x]['visible'])
 				if (self.planets[i]['visible'] == 1) & (self.planets[x]['visible'] == 1):	
 					for z in range(len(self.aspects)):
 						#check for personal planets and determine orb
@@ -2305,6 +2307,7 @@ class openAstroInstance:
 							orb_before = 2.0
 						#check if we want to display this aspect	
 						if	( float(self.aspects[z]['degree']) - orb_before ) <= diff <= ( float(self.aspects[z]['degree']) + 1.0 ):
+							#print(self.aspects[z])
 							if self.aspects[z]['visible'] == 1:
 								out = out + self.drawAspect( r , ar , self.planets_degree_ut[i] , self.t_planets_degree_ut[x] , self.colors["aspect_%s" %(self.aspects[z]['degree'])] )		
 							#aspect grid dictionary
@@ -3042,12 +3045,12 @@ class mainWindow:
 		table.set_border_width(10)
 
 		#options
-		table.attach(gtk.Label(_("Select year for Solar Return")), 0, 1, 0, 1, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(gtk.Label(_("Select year for Solar Return")), 0, 1, 0, 1, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		entry=gtk.Entry()
 		entry.set_width_chars(4)
 		entry.set_max_length(4) 
 		entry.set_text(str(datetime.datetime.now().year))
-		table.attach(entry, 1, 2, 0, 1, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(entry, 1, 2, 0, 1, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		
 		#make the ui layout with ok button
 		self.win_SS.vbox.pack_start(table, True, True, 0)
@@ -3125,7 +3128,7 @@ class mainWindow:
 		entry['m'].set_width_chars(2) 
 		entry['m'].set_text('%02d'%(datetime.datetime.now().minute))
 		hbox.pack_start(entry['m'])
-		table.attach(hbox,0,1,2,3, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10, ypadding=10)
+		table.attach(hbox,0,1,2,3, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10, ypadding=10)
 		
 		#make the ui layout with ok button
 		self.win_SSP.vbox.pack_start(table, True, True, 0)
@@ -3133,7 +3136,7 @@ class mainWindow:
 		#ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.specialSecondaryProgressionSubmit, entry)
-		button.set_flags(gtk.CAN_DEFAULT)		
+		button.set_can_default(True)		
 		self.win_SSP.action_area.pack_start(button, True, True, 0)
 		button.grab_default()		
 
@@ -4180,16 +4183,16 @@ class mainWindow:
 		table.set_border_width(10)
 
 		#use online geocoding option
-		table.attach(gtk.Label(_("Use Online Geocoding\n(ws.geonames.org)")), 0, 1, 0, 1, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)		
+		table.attach(gtk.Label(_("Use Online Geocoding\n(ws.geonames.org)")), 0, 1, 0, 1, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
 		data['use_geonames.org'] = gtk.CheckButton()
-		table.attach(data['use_geonames.org'], 1, 2, 0, 1, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(data['use_geonames.org'], 1, 2, 0, 1, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		if db.getAstrocfg('use_geonames.org') == "1":
 			data['use_geonames.org'].set_active(True)
 		
 		#house system
 		data['houses_system'] = gtk.combo_box_new_text()
-		table.attach(gtk.Label(_('Houses System')), 0, 1, 2, 3, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)		
-		table.attach(data['houses_system'], 1, 2, 2, 3, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(gtk.Label(_('Houses System')), 0, 1, 2, 3, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
+		table.attach(data['houses_system'], 1, 2, 2, 3, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		hsys={
 				"P":"Placidus",
 				"K":"Koch",
@@ -4216,8 +4219,8 @@ class mainWindow:
 		
 		#position calculation (geo,truegeo,topo,helio)		
 		data['postype'] = gtk.combo_box_new_text()
-		table.attach(gtk.Label(_('Position Calculation')), 0, 1, 4, 5, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)		
-		table.attach(data['postype'], 1, 2, 4, 5, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(gtk.Label(_('Position Calculation')), 0, 1, 4, 5, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
+		table.attach(data['postype'], 1, 2, 4, 5, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		postype={
 		
 				"geo":openAstro.label["apparent_geocentric"]+" "+_("(default)"),
@@ -4235,8 +4238,8 @@ class mainWindow:
 
 		#chart view (traditional,european)		
 		data['chartview'] = gtk.combo_box_new_text()
-		table.attach(gtk.Label(_('Chart View')), 0, 1, 6, 7, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)		
-		table.attach(data['chartview'], 1, 2, 6, 7, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(gtk.Label(_('Chart View')), 0, 1, 6, 7, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
+		table.attach(data['chartview'], 1, 2, 6, 7, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		chartview={
 				"traditional":_("Planets in Zodiac"),
 				"european":_("Planets around Zodiac")
@@ -4251,8 +4254,8 @@ class mainWindow:
 
 		#zodiac type (tropical, sidereal)	
 		data['zodiactype'] = gtk.combo_box_new_text()
-		table.attach(gtk.Label(_('Zodiac Type')), 0, 1, 8, 9, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)		
-		table.attach(data['zodiactype'], 1, 2, 8, 9, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(gtk.Label(_('Zodiac Type')), 0, 1, 8, 9, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
+		table.attach(data['zodiactype'], 1, 2, 8, 9, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		chartview={
 				"tropical":_("Tropical"),
 				"sidereal":_("Sidereal")
@@ -4275,8 +4278,8 @@ class mainWindow:
 			else:
 				data['siderealmode'].set_sensitive(True)
 		data['zodiactype'].connect("changed",zodiactype_changed)
-		table.attach(gtk.Label(_('Sidereal Mode')), 0, 1, 12, 13, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)		
-		table.attach(data['siderealmode'], 1, 2, 12, 13, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(gtk.Label(_('Sidereal Mode')), 0, 1, 12, 13, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
+		table.attach(data['siderealmode'], 1, 2, 12, 13, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		self.siderealmode_chartview={
 				"FAGAN_BRADLEY":_("Fagan Bradley"),
 				"LAHIRI":_("Lahiri"),
@@ -4328,8 +4331,8 @@ class mainWindow:
 		
 		#language		
 		data['language'] = gtk.combo_box_new_text()
-		table.attach(gtk.Label(_('Language')), 0, 1, 16, 17, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
-		table.attach(data['language'], 1, 2, 16, 17, xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=10)
+		table.attach(gtk.Label(_('Language')), 0, 1, 16, 17, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
+		table.attach(data['language'], 1, 2, 16, 17, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		
 		data['language'].append_text(_("Default"))
 		active=0
@@ -4349,7 +4352,7 @@ class mainWindow:
 		#ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.settingsConfigurationSubmit, data)
-		button.set_flags(gtk.CAN_DEFAULT)		
+		button.set_can_default(True)		
 		self.win_SC.action_area.pack_start(button, True, True, 0)
 		button.grab_default()		
 
@@ -4524,7 +4527,7 @@ class mainWindow:
 		  #ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.settingsLocationSubmit)
-		button.set_flags(gtk.CAN_DEFAULT)
+		button.set_can_default(True)
 		buttonbox.pack_start(button,False,False,0)
 		button.grab_default()
 		
@@ -4692,7 +4695,7 @@ class mainWindow:
 		#ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.settingsAspectsSubmit, data)
-		button.set_flags(gtk.CAN_DEFAULT)		
+		button.set_can_default(True)		
 		self.win_SA.action_area.pack_start(button, True, True, 0)
 		button.grab_default()		
 
@@ -4757,11 +4760,11 @@ class mainWindow:
 		label = gtk.Label(_("Planet Label"))
 		table.attach(label, 0, 1, 0, 1)
 		label = gtk.Label(_("Symbol"))
-		table.attach(label, 1, 2, 0, 1, xoptions=gtk.SHRINK, xpadding=10)
+		table.attach(label, 1, 2, 0, 1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		label = gtk.Label(_("Aspect Line"))
-		table.attach(label, 2, 3, 0, 1, xoptions=gtk.SHRINK, xpadding=10)
+		table.attach(label, 2, 3, 0, 1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		label = gtk.Label(_("Aspect Grid"))
-		table.attach(label, 3, 4, 0, 1, xoptions=gtk.SHRINK, xpadding=10)
+		table.attach(label, 3, 4, 0, 1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 						
 		data = []
 		x=1
@@ -4779,13 +4782,13 @@ class mainWindow:
 					label = gtk.Label(_("Point Label"))
 				else:
 					label = gtk.Label(_("Angle Label"))	
-				table.attach(label, 0, 1, x, x+1, xoptions=gtk.SHRINK, xpadding=10)
+				table.attach(label, 0, 1, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 				label = gtk.Label(_("Symbol"))
-				table.attach(label, 1, 2, x, x+1, xoptions=gtk.SHRINK, xpadding=10)
+				table.attach(label, 1, 2, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 				label = gtk.Label(_("Aspect Line"))
-				table.attach(label, 2, 3, x, x+1, xoptions=gtk.SHRINK, xpadding=10)
+				table.attach(label, 2, 3, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 				label = gtk.Label(_("Aspect Grid"))
-				table.attach(label, 3, 4, x, x+1, xoptions=gtk.SHRINK, xpadding=10)				
+				table.attach(label, 3, 4, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)				
 				x=x+1
 			data.append({})
 			data[-1]['id'] = openAstro.planets[i]['id']
@@ -4794,21 +4797,21 @@ class mainWindow:
 			data[-1]['label'].set_width_chars(15)
 			data[-1]['label'].set_text(openAstro.planets[i]['label'])
 			#data[-1]['label'].set_alignment(xalign=0.0, yalign=0.5)
-			table.attach(data[-1]['label'], 0, 1, x, x+1, xoptions=gtk.SHRINK, xpadding=10)
+			table.attach(data[-1]['label'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 			data[-1]['visible'] = gtk.CheckButton()
 			if openAstro.planets[i]['visible'] is 1:
 				data[-1]['visible'].set_active(True)
-			table.attach(data[-1]['visible'], 1, 2, x, x+1, xoptions=gtk.SHRINK, xpadding=2, ypadding=2)
+			table.attach(data[-1]['visible'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=2, ypadding=2)
 			
 			data[-1]['visible_aspect_line'] = gtk.CheckButton()
 			if openAstro.planets[i]['visible_aspect_line'] is 1:
 				data[-1]['visible_aspect_line'].set_active(True)
-			table.attach(data[-1]['visible_aspect_line'], 2, 3, x, x+1, xoptions=gtk.SHRINK, xpadding=2, ypadding=2)	
+			table.attach(data[-1]['visible_aspect_line'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=2, ypadding=2)	
 			
 			data[-1]['visible_aspect_grid'] = gtk.CheckButton()
 			if openAstro.planets[i]['visible_aspect_grid'] is 1:
 				data[-1]['visible_aspect_grid'].set_active(True)
-			table.attach(data[-1]['visible_aspect_grid'], 3, 4, x, x+1, xoptions=gtk.SHRINK, xpadding=2, ypadding=2)	
+			table.attach(data[-1]['visible_aspect_grid'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=2, ypadding=2)	
 			x=x+1
 		
 		#make the ui layout with ok button
@@ -4821,7 +4824,7 @@ class mainWindow:
 		#ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.settingsPlanetsSubmit, data)
-		button.set_flags(gtk.CAN_DEFAULT)		
+		button.set_can_default(True)		
 		self.win_SP.action_area.pack_start(button, True, True, 0)
 		button.grab_default()
 		
@@ -5075,7 +5078,7 @@ class mainWindow:
 		#ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.settingsColorsSubmit)
-		button.set_flags(gtk.CAN_DEFAULT)		
+		button.set_can_default(True)		
 		self.win_SC.action_area.pack_start(button, True, True, 0)
 		button.grab_default()		
 
@@ -5147,7 +5150,7 @@ class mainWindow:
 		label = gtk.Label(_("Label"))
 		table.attach(label, 0, 1, 0, 1)
 		label = gtk.Label(_("Value"))
-		table.attach(label, 1, 2, 0, 1, xoptions=gtk.SHRINK, xpadding=10)
+		table.attach(label, 1, 2, 0, 1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 						
 		self.SLdata = []
 		x=1
@@ -5163,9 +5166,9 @@ class mainWindow:
 			self.SLdata[-1]['value'].set_text(value)
 			self.SLdata[-1]['reset'] = gtk.Button(_("Default"))
 			self.SLdata[-1]['reset'].connect("clicked", self.settingsLabelReset, len(self.SLdata)-1)
-			table.attach(gtk.Label(key), 0, 1, x, x+1, xoptions=gtk.SHRINK, xpadding=10)
-			table.attach(self.SLdata[-1]['value'], 1, 2, x, x+1, xoptions=gtk.SHRINK, xpadding=2, ypadding=2)
-			table.attach(self.SLdata[-1]['reset'], 2, 3, x, x+1, xoptions=gtk.SHRINK, xpadding=2, ypadding=2)
+			table.attach(gtk.Label(key), 0, 1, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=10)
+			table.attach(self.SLdata[-1]['value'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=2, ypadding=2)
+			table.attach(self.SLdata[-1]['reset'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.SHRINK, xpadding=2, ypadding=2)
 			x=x+1
 		
 		#make the ui layout with ok button
@@ -5178,7 +5181,7 @@ class mainWindow:
 		#ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.settingsLabelSubmit, self.SLdata)
-		button.set_flags(gtk.CAN_DEFAULT)		
+		button.set_can_default(True)		
 		self.win_SL.action_area.pack_start(button, True, True, 0)
 		button.grab_default()
 		
@@ -5917,7 +5920,12 @@ class drawSVG(gtk.DrawingArea):
 	def drawMe(self, widget, cr):
 		if self.svg != None:
 			dprint("Trying to render svg now.")
+			#dprint(self.svg.get_base_uri())
+			#target=cr.get_target()
+			#cr.set_source_rgb(1.0, 1.0, 1.0)
+			#cr.paint()
 			suc = self.svg.render_cairo(cr)
+			#print(dir(cr))
 			dprint("Drawing succeeded? {}".format(suc))
 			return False
 
