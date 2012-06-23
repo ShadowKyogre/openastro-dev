@@ -1,20 +1,20 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-    This file is part of openastro.org.
+	This file is part of openastro.org.
 
-    OpenAstro.org is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	OpenAstro.org is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    OpenAstro.org is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	OpenAstro.org is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with OpenAstro.org.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with OpenAstro.org.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 #debug
@@ -83,19 +83,19 @@ if LOCAL:
 else:
 	TDomain = os.path.join(DATADIR,'locale')
 
-LANGUAGES=LANGUAGES_LABEL.keys()
+LANGUAGES=list(LANGUAGES_LABEL.keys())
 TRANSLATION={}
 for i in range(len(LANGUAGES)):
 	try:
 		TRANSLATION[LANGUAGES[i]] = gettext.translation("openastro",TDomain,languages=[LANGUAGES[i]])
 	except IOError:
-		print "IOError! Invalid languages specified (%s) in %s %(LANGUAGES[i],TDomain)"
+		print("IOError! Invalid languages specified (%s) in %s %(LANGUAGES[i],TDomain)")
 		TRANSLATION[LANGUAGES[i]] = gettext.translation("openastro",TDomain,languages=['en'])
 		
 try:
 	TRANSLATION["default"] = gettext.translation("openastro",TDomain)
 except IOError:
-	print "OpenAstro.org has not yet been translated in your language! Could not load translation..."
+	print("OpenAstro.org has not yet been translated in your language! Could not load translation...")
 	TRANSLATION["default"] = gettext.translation("openastro",TDomain,languages=['en'])
 
 #config class
@@ -197,17 +197,17 @@ class openAstroSqlite:
 			"timezonestr":"VARCHAR(100)",
 			"extra":"VARCHAR(500)"
 			}
-		if self.ptables.has_key('event_natal') == False:		
+		if ('event_natal' in self.ptables) == False:		
 			sql='CREATE TABLE IF NOT EXISTS event_natal (id INTEGER PRIMARY KEY,name VARCHAR(50)\
 				 ,year VARCHAR(4),month VARCHAR(2), day VARCHAR(2), hour VARCHAR(50), geolon VARCHAR(50)\
-			 	,geolat VARCHAR(50), altitude VARCHAR(50), location VARCHAR(150), timezone VARCHAR(50)\
-			 	,notes VARCHAR(500), image VARCHAR(250), countrycode VARCHAR(2), geonameid INTEGER\
-			 	,timezonestr VARCHAR(100), extra VARCHAR(250))'
+				 ,geolat VARCHAR(50), altitude VARCHAR(50), location VARCHAR(150), timezone VARCHAR(50)\
+				 ,notes VARCHAR(500), image VARCHAR(250), countrycode VARCHAR(2), geonameid INTEGER\
+				 ,timezonestr VARCHAR(100), extra VARCHAR(250))'
 			self.pcursor.execute(sql)
 			dprint('creating sqlite table event_natal in peopledb')
 		
 		#check for astrocfg table in astrodb
-		if self.tables.has_key('astrocfg') == False:
+		if ('astrocfg' in self.tables) == False:
 			#0=cfg_name, 1=cfg_value
 			sql='CREATE TABLE IF NOT EXISTS astrocfg (name VARCHAR(150) UNIQUE,value VARCHAR(150))'
 			self.cursor.execute(sql)
@@ -244,7 +244,7 @@ class openAstroSqlite:
 							"zodiactype":"tropical",
 							"siderealmode":"FAGAN_BRADLEY"
 						 }
-			for k, v in default.iteritems():
+			for k, v in default.items():
 				sql='INSERT OR %s INTO astrocfg (name,value) VALUES(?,?)' % (self.dbpurge)
 				self.cursor.execute(sql,(k,v))
 				
@@ -268,7 +268,7 @@ class openAstroSqlite:
 			cnames=[]
 			for i in range(len(list)):
 				cnames.append(list[i][1])
-			for key,val in self.ptable_event_natal.iteritems():
+			for key,val in self.ptable_event_natal.items():
 				if key not in cnames:
 					sql = 'ALTER TABLE event_natal ADD %s %s'%(key,val)
 					dprint("dbcheck peopledb.event_natal adding %s %s"%(key,val))					
@@ -280,12 +280,12 @@ class openAstroSqlite:
 				dprint('dbcheck peopledb.event_natal: updating table definitions!')
 				
 		#check for history table in astrodb
-		if self.tables.has_key('history') == False:
+		if ('history' in self.tables) == False:
 			#0=id,1=name,2=year,3=month,4=day,5=hour,6=geolon,7=geolat,8=alt,9=location,10=tz
 			sql='CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY,name VARCHAR(50)\
 				 ,year VARCHAR(50),month VARCHAR(50), day VARCHAR(50), hour VARCHAR(50), geolon VARCHAR(50)\
-			 	,geolat VARCHAR(50), altitude VARCHAR(50), location VARCHAR(150), timezone VARCHAR(50)\
-			 	,notes VARCHAR(500), image VARCHAR(250), countrycode VARCHAR(2), geonameid INTEGER, extra VARCHAR(250))'
+				 ,geolat VARCHAR(50), altitude VARCHAR(50), location VARCHAR(150), timezone VARCHAR(50)\
+				 ,notes VARCHAR(500), image VARCHAR(250), countrycode VARCHAR(2), geonameid INTEGER, extra VARCHAR(250))'
 			self.cursor.execute(sql)
 			dprint('creating sqlite table history in astrodb')
 
@@ -324,7 +324,7 @@ class openAstroSqlite:
 				dprint('dbcheck: updating history table definitions!')
 		
 		#check for settings_aspect table in astrodb
-		if self.tables.has_key('settings_aspect') == False:
+		if ('settings_aspect' in self.tables) == False:
 			sql='CREATE TABLE IF NOT EXISTS settings_aspect (degree INTEGER UNIQUE, name VARCHAR(50)\
 				 ,color VARCHAR(50),visible INTEGER, visible_grid INTEGER\
 				 ,is_major INTEGER, is_minor INTEGER, orb VARCHAR(5))'
@@ -370,12 +370,12 @@ class openAstroSqlite:
 			dprint('dbcheck astrodb.settings_aspect')		
 			degree = [ 0 , 30 , 45 , 60 , 72 , 90 , 120 , 135 , 144 , 150 , 180 ]
 			name = [ _('conjunction') , _('semi-sextile') , _('semi-square') , _('sextile') , _('quintile') , _('square') , _('trine') , _('sesquiquadrate') , _('biquintile') , _('quincunx') , _('opposition') ]
-			color = [ '#5757e2' ,	'#810757' , 			'#b14e58' ,	 '#d59e28' , '#1f99b3' ,'#dc0000' , '#36d100' , '#985a10' , 		  '#7a9810' , 	'#fff600' ,		 '#510060' ]
-			visible =      [ 1 , 0 , 0 , 1 , 1 , 1 , 1 , 0 , 1 , 1 , 1 ]
+			color = [ '#5757e2' ,	'#810757' ,			 '#b14e58' ,	 '#d59e28' , '#1f99b3' ,'#dc0000' , '#36d100' , '#985a10' ,		   '#7a9810' ,	 '#fff600' ,		 '#510060' ]
+			visible =	  [ 1 , 0 , 0 , 1 , 1 , 1 , 1 , 0 , 1 , 1 , 1 ]
 			visible_grid = [ 1 , 0 , 0 , 1 , 1 , 1 , 1 , 0 , 1 , 1 , 1 ]
-			is_major =     [ 1 , 0 , 0 , 1 , 0 , 1 , 1 , 0 , 0 , 0 , 1 ]
-			is_minor = 	   [ 0 , 1 , 1 , 0 , 1 , 0 , 0 , 1 , 1 , 0 , 0 ]
-			orb =    		[ 10, 3 , 3 , 6 , 2 , 8 , 8 , 3 , 2 , 3 , 10]
+			is_major =	 [ 1 , 0 , 0 , 1 , 0 , 1 , 1 , 0 , 0 , 0 , 1 ]
+			is_minor =		[ 0 , 1 , 1 , 0 , 1 , 0 , 0 , 1 , 1 , 0 , 0 ]
+			orb =			[ 10, 3 , 3 , 6 , 2 , 8 , 8 , 3 , 2 , 3 , 10]
 			#insert values
 			for i in range(len(degree)):	
 				sql='INSERT OR %s INTO settings_aspect \
@@ -385,7 +385,7 @@ class openAstroSqlite:
 				self.cursor.execute(sql)
 	
 		#check for colors table in astrodb
-		if self.tables.has_key('color_codes') == False:
+		if ('color_codes' in self.tables) == False:
 			sql='CREATE TABLE IF NOT EXISTS color_codes (name VARCHAR(50) UNIQUE\
 				 ,code VARCHAR(50))'
 			self.cursor.execute(sql)
@@ -473,14 +473,14 @@ class openAstroSqlite:
 		if self.dbcheck:
 			dprint('dbcheck astrodb.color_codes')
 			#insert values
-			for k,v in self.defaultColors.iteritems():	
+			for k,v in self.defaultColors.items():	
 				sql='INSERT OR %s INTO color_codes \
 				(name, code)\
 				VALUES("%s","%s")' % ( self.dbpurge , k, v )
 				self.cursor.execute(sql)
 
 		#check for label table in astrodb
-		if self.tables.has_key('label') == False:
+		if ('label' in self.tables) == False:
 			sql='CREATE TABLE IF NOT EXISTS label (name VARCHAR(150) UNIQUE\
 				 ,value VARCHAR(200))'
 			self.cursor.execute(sql)
@@ -515,7 +515,7 @@ class openAstroSqlite:
 		if self.dbcheck:
 			dprint('dbcheck astrodb.label')
 			#insert values
-			for k,v in self.defaultLabel.iteritems():	
+			for k,v in self.defaultLabel.items():	
 				sql='INSERT OR %s INTO label \
 				(name, value)\
 				VALUES("%s","%s")' % ( self.dbpurge , k, v )
@@ -534,11 +534,11 @@ class openAstroSqlite:
 				"visible_aspect_line":"INTEGER",
 				"visible_aspect_grid":"INTEGER"
 				}
-		if self.tables.has_key('settings_planet') == False:
+		if ('settings_planet' in self.tables) == False:
 			sql='CREATE TABLE IF NOT EXISTS settings_planet (id INTEGER UNIQUE, name VARCHAR(50)\
 				,color VARCHAR(50),visible INTEGER, element_points INTEGER, zodiac_relation VARCHAR(50)\
-			 	,label VARCHAR(50), label_short VARCHAR(20), visible_aspect_line INTEGER\
-			 	,visible_aspect_grid INTEGER)'
+				 ,label VARCHAR(50), label_short VARCHAR(20), visible_aspect_line INTEGER\
+				 ,visible_aspect_grid INTEGER)'
 			self.cursor.execute(sql)
 			self.dbcheck=True
 			dprint('creating sqlite table settings_planet in astrodb')
@@ -633,7 +633,7 @@ class openAstroSqlite:
 			cnames=[]
 			for i in range(len(list)):
 				cnames.append(list[i][1])
-			for key,val in self.table_settings_planet.iteritems():
+			for key,val in self.table_settings_planet.items():
 				if key not in cnames:
 					sql = 'ALTER TABLE settings_planet ADD %s %s'%(key,val)
 					dprint("dbcheck astrodb.settings_planet adding %s %s"%(key,val))					
@@ -740,7 +740,7 @@ class openAstroSqlite:
 		dict = []
 		for row in self.pcursor:
 			s={}			
-			for key,val in self.ptable_event_natal.iteritems():
+			for key,val in self.ptable_event_natal.items():
 				if row[key] == None:
 					s[key]=""
 				else:
@@ -824,7 +824,7 @@ class openAstroSqlite:
 		dict = []
 		for row in self.cursor:
 			s={}			
-			for key,val in self.table_settings_planet.iteritems():
+			for key,val in self.table_settings_planet.items():
 				s[key]=row[key]
 			dict.append(s)
 		self.close()
@@ -845,7 +845,7 @@ class openAstroSqlite:
 	
 	def getSettingsLocation(self):
 		#look if location is known
-		if self.astrocfg.has_key('home_location') == False or self.astrocfg.has_key('home_timezonestr') == False:
+		if ('home_location' in self.astrocfg) == False or ('home_timezonestr' in self.astrocfg) == False:
 			self.open()			
 			sql='INSERT OR REPLACE INTO astrocfg (name,value) VALUES("home_location","")'
 			self.cursor.execute(sql)
@@ -908,15 +908,15 @@ class openAstroSqlite:
 		target_cur.execute(sql)
 		for row in target_cur:
 			target_names[row['name']]=1
-		for k,v in target_names.iteritems():		
+		for k,v in target_names.items():		
 			for i in range(1,10):
-				if target_names.has_key('%s (#%s)' % (k,i)):
+				if '%s (#%s)' % (k,i) in target_names:
 					target_names[k] += 1
 					
 		#read input write target
 		for row in data:
 			
-			if target_names.has_key(row['name']):
+			if row['name'] in target_names:
 				name_suffix = ' (#%s)' % target_names[row['name']]
 				target_names[row['name']] += 1
 			else:
@@ -944,8 +944,8 @@ class openAstroSqlite:
 	database format:
 	'CREATE TABLE IF NOT EXISTS event_natal (id INTEGER PRIMARY KEY,name VARCHAR(50)\
 				 ,year VARCHAR(50),month VARCHAR(50), day VARCHAR(50), hour VARCHAR(50), geolon VARCHAR(50)\
-			 	,geolat VARCHAR(50), altitude VARCHAR(50), location VARCHAR(150), timezone VARCHAR(50)\
-			 	,notes VARCHAR(500), image VARCHAR(250))'
+				 ,geolat VARCHAR(50), altitude VARCHAR(50), location VARCHAR(150), timezone VARCHAR(50)\
+				 ,notes VARCHAR(500), image VARCHAR(250))'
 	"""	
 	def databaseMerge(self,target_db,input_db):
 		dprint('db.databaseMerge: %s << %s'%(target_db,input_db))
@@ -961,16 +961,16 @@ class openAstroSqlite:
 		target_cur.execute(sql)
 		for row in target_cur:
 			target_names[row['name']]=1
-		for k,v in target_names.iteritems():		
+		for k,v in target_names.items():		
 			for i in range(1,10):
-				if target_names.has_key('%s (#%s)' % (k,i)):
+				if '%s (#%s)' % (k,i) in target_names:
 					target_names[k] += 1
 
 		#read input write target
 		sql='SELECT * FROM event_natal'
 		input_cur.execute(sql)
 		for row in input_cur:
-			if target_names.has_key(row['name']):
+			if row['name'] in target_names:
 				name_suffix = ' (#%s)' % target_names[row['name']]
 				target_names[row['name']] += 1
 			else:
@@ -1026,34 +1026,34 @@ class openAstroSqlite:
 		diff = {}
 		sql = 'SELECT id,latitude,longitude FROM geonames\
  WHERE latitude >= %s AND latitude <= %s AND longitude >= %s AND longitude <= %s' % (lat-0.5,lat+0.5,lon-0.5,lon+0.5)
- 		self.gquery(sql)
- 		for row in self.gcursor:
- 			diff[zonetab.distance( lat , lon , row['latitude'] , row['longitude'])]=row['id']
- 		self.gclose()
- 		keys=diff.keys()
- 		keys.sort()
- 		
- 		dict={}
- 		if keys == []:
- 			dict = {'country':None,'admin1':None,'geonameid':None,'continent':None,'timezonestr':None}
- 			dprint('gnearest: no town found within 66km range!')
- 		else:
- 			sql = 'SELECT * FROM geonames WHERE id=%s LIMIT 1' % (diff[keys[0]])
- 			self.gquery(sql)
- 			geoname = self.gcursor.fetchone()
- 			self.gclose()
- 			dict['country']=geoname['country']
- 			dict['admin1']=geoname['admin1']
- 			dict['geonameid']=geoname['geonameid']
- 			dict['timezonestr']=geoname['timezone']
- 			sql = 'SELECT * FROM countryinfo WHERE isoalpha2="%s" LIMIT 1' % (geoname['country'])
-			self.gquery(sql) 			
- 			countryinfo = self.gcursor.fetchone()
- 			dict['continent']=countryinfo['continent']
- 			self.gclose()
- 			dprint('gnearest: found town %s at %s,%s,%s' % (geoname['name'],geoname['latitude'],
- 				geoname['longitude'],geoname['timezone']))
- 		return dict
+		self.gquery(sql)
+		for row in self.gcursor:
+			diff[zonetab.distance( lat , lon , row['latitude'] , row['longitude'])]=row['id']
+		self.gclose()
+		keys=list(diff.keys())
+		keys.sort()
+		
+		dict={}
+		if keys == []:
+			dict = {'country':None,'admin1':None,'geonameid':None,'continent':None,'timezonestr':None}
+			dprint('gnearest: no town found within 66km range!')
+		else:
+			sql = 'SELECT * FROM geonames WHERE id=%s LIMIT 1' % (diff[keys[0]])
+			self.gquery(sql)
+			geoname = self.gcursor.fetchone()
+			self.gclose()
+			dict['country']=geoname['country']
+			dict['admin1']=geoname['admin1']
+			dict['geonameid']=geoname['geonameid']
+			dict['timezonestr']=geoname['timezone']
+			sql = 'SELECT * FROM countryinfo WHERE isoalpha2="%s" LIMIT 1' % (geoname['country'])
+			self.gquery(sql)			 
+			countryinfo = self.gcursor.fetchone()
+			dict['continent']=countryinfo['continent']
+			self.gclose()
+			dprint('gnearest: found town %s at %s,%s,%s' % (geoname['name'],geoname['latitude'],
+				 geoname['longitude'],geoname['timezone']))
+		return dict
 	
 	def gquery(self, sql, tuple=None):
 		self.glink = sqlite3.connect(cfg.geonamesdb)
@@ -1738,7 +1738,7 @@ class openAstroInstance:
 				roff=self.c1
 				
 			#offset is negative desc houses_degree_ut[6]
-			offset = (int(self.houses_degree_ut[xr/2]) / -1) + int(self.houses_degree_ut[i])
+			offset = (int(self.houses_degree_ut[int(xr/2)]) / -1) + int(self.houses_degree_ut[i])
 			x1 = self.sliceToX( 0 , (r-dropin) , offset ) + dropin
 			y1 = self.sliceToY( 0 , (r-dropin) , offset ) + dropin
 			x2 = self.sliceToX( 0 , r-roff , offset ) + roff
@@ -1805,7 +1805,7 @@ class openAstroInstance:
 		
 		planets_degut={}
 		
-		diff=range(len(self.planets))
+		diff=list(range(len(self.planets)))
 		for i in range(len(self.planets)):
 			if self.planets[i]['visible'] == 1:
 				#list of planets sorted by degree				
@@ -1832,13 +1832,13 @@ class openAstroInstance:
 				self.water = self.water + self.planets[i]['element_points'] + extrapoints
 				
 		output = ""	
-		keys = planets_degut.keys()
+		keys = list(planets_degut.keys())
 		keys.sort()
 		switch=0
 		
 		planets_degrouped = {}
 		groups = []
-		planets_by_pos = range(len(planets_degut))
+		planets_by_pos = list(range(len(planets_degut)))
 		planet_drange = 3.4
 		#get groups closely together
 		group_open=False
@@ -1871,7 +1871,7 @@ class openAstroInstance:
 				group_open=False	
 		
 		def zero(x): return 0
-		planets_delta = map(zero,range(len(self.planets)))
+		planets_delta = list(map(zero,list(range(len(self.planets)))))
 
 		#print groups
 		#print planets_by_pos
@@ -2005,7 +2005,7 @@ class openAstroInstance:
 				group_offset[i]=0
 				if self.planets[i]['visible'] == 1:
 					t_planets_degut[self.t_planets_degree_ut[i]]=i
-			t_keys = t_planets_degut.keys()
+			t_keys = list(t_planets_degut.keys())
 			t_keys.sort()
 			
 			#grab closely grouped planets
@@ -2127,7 +2127,7 @@ class openAstroInstance:
 	def makePatterns( self ):
 		"""
 		* Stellium: At least four planets linked together in a series of continuous conjunctions.
-    	* Grand trine: Three trine aspects together.
+		* Grand trine: Three trine aspects together.
 		* Grand cross: Two pairs of opposing planets squared to each other.
 		* T-Square: Two planets in opposition squared to a third. 
 		* Yod: Two qunicunxes together joined by a sextile. 
@@ -2189,24 +2189,24 @@ class openAstroInstance:
 							
 		yot={}
 		#check for double qunicunxes
-		for k,v in qc.iteritems():
+		for k,v in qc.items():
 			if len(qc[k]) >= 2:
 				#check for sextile
-				for l,w in qc[k].iteritems():
-					for m,x in qc[k].iteritems():
-						if sext[l].has_key(m):
+				for l,w in qc[k].items():
+					for m,x in qc[k].items():
+						if m in sext[l]:
 							if l > m:
 								yot['%s,%s,%s' % (k,m,l)] = [k,m,l]
 							else:
 								yot['%s,%s,%s' % (k,l,m)] = [k,l,m]
 		tsquare={}
 		#check for opposition
-		for k,v in opp.iteritems():
+		for k,v in opp.items():
 			if len(opp[k]) >= 1:
 				#check for square
-				for l,w in opp[k].iteritems():
-						for a,b in sq.iteritems():
-							if sq[a].has_key(k) and sq[a].has_key(l):
+				for l,w in opp[k].items():
+						for a,b in sq.items():
+							if k in sq[a] and l in sq[a]:
 								#print 'got tsquare %s %s %s' % (a,k,l)
 								if k > l:
 									tsquare['%s,%s,%s' % (a,l,k)] = '%s => %s, %s' % (
@@ -2216,24 +2216,24 @@ class openAstroInstance:
 										self.planets[a]['label'],self.planets[k]['label'],self.planets[l]['label'])
 		stellium={}
 		#check for 4 continuous conjunctions	
-		for k,v in conj.iteritems():
+		for k,v in conj.items():
 			if len(conj[k]) >= 1:
 				#first conjunction
-				for l,m in conj[k].iteritems():
+				for l,m in conj[k].items():
 					if len(conj[l]) >= 1:
-						for n,o in conj[l].iteritems():
+						for n,o in conj[l].items():
 							#skip 1st conj
 							if n == k:
 								continue
 							if len(conj[n]) >= 1:
 								#third conjunction
-								for p,q in conj[n].iteritems():
+								for p,q in conj[n].items():
 									#skip first and second conj
 									if p == k or p == n:
 										continue
 									if len(conj[p]) >= 1:										
 										#fourth conjunction
-										for r,s in conj[p].iteritems():
+										for r,s in conj[p].items():
 											#skip conj 1,2,3
 											if r == k or r == n or r == p:
 												continue
@@ -2247,7 +2247,7 @@ class openAstroInstance:
 		out='<g transform="translate(-30,380)">'
 		if len(yot) >= 1:
 			y=0
-			for k,v in yot.iteritems():
+			for k,v in yot.items():
 				out += '<text y="%s" style="fill:#000; font-size: 12px;">%s</text>\n' % (y,_("Yot"))
 				
 				#first planet symbol
@@ -2355,7 +2355,7 @@ class openAstroInstance:
 		xindent=380
 		yindent=468
 		box=14
-		revr=range(len(self.planets))
+		revr=list(range(len(self.planets)))
 		revr.reverse()
 		for a in revr:
 			if self.planets[a]['visible_aspect_grid'] == 1:
@@ -2365,7 +2365,7 @@ class openAstroInstance:
 				out = out + '<use transform="scale(0.4)" x="'+str((xindent+2)*2.5)+'" y="'+str((yindent+1)*2.5)+'" xlink:href="#'+self.planets[a]['name']+'" />\n'
 				xindent = xindent + box
 				yindent = yindent - box
-				revr2=range(a)
+				revr2=list(range(a))
 				revr2.reverse()
 				xorb=xindent
 				yorb=yindent + box
@@ -2713,28 +2713,28 @@ class mainWindow:
 		#actions definitions
 		self.actions = [('File', None, _('Chart') ),
 								('Quit', gtk.STOCK_QUIT, _("Quit!"), None,'Quit the Program', self.quit_cb),
-	                     ('History', None, _('History') ),
-	                     ('newChart', gtk.STOCK_NEW, _('New Chart'), None, 'New Chart', self.eventDataNew ),
-	                     ('importXML', gtk.STOCK_OPEN, _('Open Chart'), None, 'Open Chart', self.doImport ),								
-	                     ('exportXML', gtk.STOCK_SAVE, _('Save Chart'), None, 'Save Chart', self.doExport ),
-	                     ('export', gtk.STOCK_SAVE_AS, _('Save as') ),
-	                     ('exportPNG', None, _('PNG Image'), None, 'PNG Image', self.doExport ),
-	                     ('exportSVG', None, _('SVG Image'), None, 'SVG Image', self.doExport ),
-	                     ('exportJPG', None, _('JPG Image'), None, 'JPG Image', self.doExport ),
-	                     ('import', None, _('Import') ),
-	                     ('importOroboros', None, _('Oroboros (*.xml)'), None, 'Oroboros (*.xml)', self.doImport ),
-	                     ('importAstrolog32', None, _('Astrolog (*.dat)'), None, 'Astrolog (*.dat)', self.doImport ),
-	                     ('importSkylendar', None, _('Skylendar (*.skif)'), None, 'Skylendar (*.skif)', self.doImport ),
-	                     ('importZet8', None, _('Zet8 Dbase (*.zbs)'), None, 'Zet8 Dbase (*.zbs)', self.doImport ),							
+						 ('History', None, _('History') ),
+						 ('newChart', gtk.STOCK_NEW, _('New Chart'), None, 'New Chart', self.eventDataNew ),
+						 ('importXML', gtk.STOCK_OPEN, _('Open Chart'), None, 'Open Chart', self.doImport ),								
+						 ('exportXML', gtk.STOCK_SAVE, _('Save Chart'), None, 'Save Chart', self.doExport ),
+						 ('export', gtk.STOCK_SAVE_AS, _('Save as') ),
+						 ('exportPNG', None, _('PNG Image'), None, 'PNG Image', self.doExport ),
+						 ('exportSVG', None, _('SVG Image'), None, 'SVG Image', self.doExport ),
+						 ('exportJPG', None, _('JPG Image'), None, 'JPG Image', self.doExport ),
+						 ('import', None, _('Import') ),
+						 ('importOroboros', None, _('Oroboros (*.xml)'), None, 'Oroboros (*.xml)', self.doImport ),
+						 ('importAstrolog32', None, _('Astrolog (*.dat)'), None, 'Astrolog (*.dat)', self.doImport ),
+						 ('importSkylendar', None, _('Skylendar (*.skif)'), None, 'Skylendar (*.skif)', self.doImport ),
+						 ('importZet8', None, _('Zet8 Dbase (*.zbs)'), None, 'Zet8 Dbase (*.zbs)', self.doImport ),							
 								('Print', gtk.STOCK_PRINT, _('Print'), None, 'Print', self.doPrint ),
-	                     ('Event', None, _('Event') ),
-	                     ('EditEvent', gtk.STOCK_EDIT, _('Edit Event'), None, 'Event Data', self.eventData ),
-	                     ('OpenDatabase', gtk.STOCK_HARDDISK, _('Open Database'), None, 'Open Database', self.openDatabase ),
-								('QuickOpenDatabase', None, _('Quick Open Database') ),	                     
-	                     ('OpenDatabaseFamous', gtk.STOCK_HARDDISK, _('Open Famous People Database'), None, 'Open Database Famous', self.openDatabaseFamous ),
-	                     ('Settings', None, _('Settings') ),
-	                     ('Special', None, _('Chart Type') ),
-	                     ('ZoomRadio', None, _('Zoom') ),
+						 ('Event', None, _('Event') ),
+						 ('EditEvent', gtk.STOCK_EDIT, _('Edit Event'), None, 'Event Data', self.eventData ),
+						 ('OpenDatabase', gtk.STOCK_HARDDISK, _('Open Database'), None, 'Open Database', self.openDatabase ),
+								('QuickOpenDatabase', None, _('Quick Open Database') ),						 
+						 ('OpenDatabaseFamous', gtk.STOCK_HARDDISK, _('Open Famous People Database'), None, 'Open Database Famous', self.openDatabaseFamous ),
+						 ('Settings', None, _('Settings') ),
+						 ('Special', None, _('Chart Type') ),
+						 ('ZoomRadio', None, _('Zoom') ),
 								('Planets', None, _('Planets & Angles'), None, 'Planets & Angles', self.settingsPlanets ),
 								('Aspects', None, _('Aspects'), None, 'Aspects', self.settingsAspects ),
 								('Colors', None, _('Colors'), None, 'Colors', self.settingsColors ),
@@ -2755,16 +2755,16 @@ class mainWindow:
 								('exportDB', None, _('Export Database'), None, 'Export Database', self.extraExportDB ),
 								('importDB', None, _('Import Database'), None, 'Import Database', self.extraImportDB ),
 								('About', None, _('About') ),
-								('AboutInfo', gtk.STOCK_INFO, _('Info'), None, 'Info', self.aboutInfo )  ,                   
-	                     ('AboutSupport', gtk.STOCK_HELP, _('Support'), None, 'Support', lambda w: webbrowser.open_new('http://www.openastro.org/?Support') )
-	                     ]
+								('AboutInfo', gtk.STOCK_INFO, _('Info'), None, 'Info', self.aboutInfo )  ,				   
+						 ('AboutSupport', gtk.STOCK_HELP, _('Support'), None, 'Support', lambda w: webbrowser.open_new('http://www.openastro.org/?Support') )
+						 ]
 
 		#update UI
 		self.updateUI()
 
 		# Create a MenuBar
 		menubar = self.uimanager.get_widget('/MenuBar')
-		self.vbox.pack_start(menubar, False)
+		self.vbox.pack_start(menubar, False, True , True)
 		
 		#make first SVG
 		self.tempfilename = openAstro.makeSVG()
@@ -2775,7 +2775,7 @@ class mainWindow:
 		scrolledwindow = gtk.ScrolledWindow()
 		scrolledwindow.add_with_viewport(self.draw)
 		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
-		self.vbox.pack_start(scrolledwindow)
+		self.vbox.pack_start(scrolledwindow,True,True,True)
 	
 		self.window.add(self.vbox)
 		self.window.show_all()
@@ -2796,7 +2796,7 @@ class mainWindow:
 	
 	def extraExportDB(self, widget):
 		chooser = gtk.FileChooserDialog(title=None,action=gtk.FileChooserAction.SAVE,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
+								  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		chooser.set_current_name('openastro-database.sql')
 		filter = gtk.FileFilter()
@@ -2809,12 +2809,12 @@ class mainWindow:
 			copyfile(cfg.peopledb, chooser.get_filename())
 
 		elif response == gtk.ResponseType.CANCEL:
-					dprint('Dialog closed, no files selected')	
+			dprint('Dialog closed, no files selected')	
 		chooser.destroy()
 	
 	def extraImportDB(self, widget):
 		chooser = gtk.FileChooserDialog(title=_("Please select database to import"),action=gtk.FileChooserAction.OPEN,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_OPEN,gtk.ResponseType.OK))
+								  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_OPEN,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		filter = gtk.FileFilter()
 		filter.set_name(_("OpenAstro.org Databases (*.sql)"))
@@ -2826,7 +2826,7 @@ class mainWindow:
 			db.databaseMerge(cfg.peopledb,chooser.get_filename())
 
 		elif response == gtk.ResponseType.CANCEL:
-					dprint('Dialog closed, no files selected')	
+			dprint('Dialog closed, no files selected')	
 		chooser.destroy()			
 
 	"""	Function to check if we have an internet connection	for geonames.org geocoder """
@@ -2846,7 +2846,7 @@ class mainWindow:
 		
 		try:
 			socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM)
-		except socket.error, msg:
+		except socket.error as msg:
 			self.iconn = False
 			dprint('iconn: no connection (getaddrinfo)')
 			return		
@@ -2855,12 +2855,12 @@ class mainWindow:
 			af, socktype, proto, canonname, sa = res
 			try:
 				s = socket.socket(af, socktype, proto)
-			except socket.error, msg:
+			except socket.error as msg:
 				s = None
 				continue
 			try:
 				s.connect(sa)
-			except (socket.error, timeoutsocket.Timeout):
+			except (socket.error,timeoutsocket.Timeout):
 				s.close()
 				s = None
 				continue
@@ -2896,7 +2896,7 @@ class mainWindow:
 	def doExport(self, widget):
 
 		chooser = gtk.FileChooserDialog(title=None,action=gtk.FileChooserAction.SAVE,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
+								  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		
 		filter = gtk.FileFilter()
@@ -2934,21 +2934,23 @@ class mainWindow:
 			if widget.get_name() == 'exportSVG':
 				copyfile(cfg.tempfilename, chooser.get_filename())
 			elif widget.get_name() == 'exportPNG':
-				os.system("%s %s %s" % ('convert',cfg.tempfilename,"'"+chooser.get_filename()+"'"))
+				os.system("convert {} '{}'".format(cfg.tempfilename,chooser.get_filename()))
 			elif widget.get_name() == 'exportJPG':
-				os.system("%s %s %s" % ('convert',cfg.tempfilename,"'"+chooser.get_filename()+"'"))
+				os.system("convert {} '{}'".format(cfg.tempfilename,chooser.get_filename()))
 			elif widget.get_name() == 'exportXML':
 				openAstro.exportOAC(chooser.get_filename())
 		elif response == gtk.ResponseType.CANCEL:
-					dprint('Dialog closed, no files selected')
+			dprint('Dialog closed, no files selected')
 			
 		chooser.destroy()
 		return
 	
 	def doImport(self, widget):
 	
-		chooser = gtk.FileChooserDialog(title=_('Select file to open'),action=gtk.FileChooserAction.OPEN,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_OPEN,gtk.ResponseType.OK))
+		chooser = gtk.FileChooserDialog(title=_('Select file to open'),
+								  action=gtk.FileChooserAction.OPEN,
+								  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,
+								  gtk.STOCK_OPEN,gtk.ResponseType.OK))
 		chooser.set_current_folder(cfg.homedir)
 		
 		filter = gtk.FileFilter()
@@ -2968,7 +2970,7 @@ class mainWindow:
 			filter.add_pattern("*.dat")
 		elif widget.get_name() == 'importZet8':
 			filter.set_name(_("Zet8 Databases (*.zbs)"))
-			filter.add_pattern("*.zbs")	
+			filter.add_pattern("*.zbs")
 		chooser.add_filter(filter)		
 		response = chooser.run()
 		
@@ -2985,7 +2987,7 @@ class mainWindow:
 				openAstro.importZet8(chooser.get_filename())			
 			self.updateChart()
 		elif response == gtk.ResponseType.CANCEL:
-					dprint('Dialog closed, no files selected')
+			dprint('Dialog closed, no files selected')
 		chooser.destroy()
 		return
 	
@@ -3152,10 +3154,10 @@ class mainWindow:
 	
 	def tableMonthlyTimeline(self, widget):
 		dialog = gtk.Dialog(_("Select Month"),
-                     self.window,
-                     gtk.DialogFlags.MODAL | gtk.DialogFlags.DESTROY_WITH_PARENT,
-                     (gtk.STOCK_CANCEL, gtk.ResponseType.REJECT,
-                      gtk.STOCK_OK, gtk.ResponseType.ACCEPT))
+					 self.window,
+					 gtk.DialogFlags.MODAL | gtk.DialogFlags.DESTROY_WITH_PARENT,
+					 (gtk.STOCK_CANCEL, gtk.ResponseType.REJECT,
+					  gtk.STOCK_OK, gtk.ResponseType.ACCEPT))
 
 		dialog.connect("destroy", lambda w: dialog.destroy())
 		dialog.set_size_request(200, 200)
@@ -3192,7 +3194,7 @@ class mainWindow:
 
 		if pdf:
 			chooser = gtk.FileChooserDialog(title=_("Select Export Filename"),action=gtk.FileChooserAction.SAVE,
-                                  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
+								  buttons=(gtk.STOCK_CANCEL,gtk.ResponseType.CANCEL,gtk.STOCK_SAVE,gtk.ResponseType.OK))
 			chooser.set_current_folder(cfg.homedir)
 			chooser.set_current_folder(cfg.homedir)
 			chooser.set_current_name(name)
@@ -3308,7 +3310,7 @@ class mainWindow:
 									atgrid[s]={}
 								atgrid[s][d]=orb
 		#sort
-		keys = astypes.keys()
+		keys = list(astypes.keys())
 		keys.sort()
 		pages = int(math.ceil(len(keys)/65.0))
 		
@@ -3485,7 +3487,7 @@ class mainWindow:
 						style="%s">%s</text>\n\
 						'%(x-30, y+box-5, textstyle, openAstro.label['cusp']+" "+str(cusp+1))
 									
-		revr=range(len(openAstro.planets))
+		revr=list(range(len(openAstro.planets)))
 		for a in revr:
 			if 23 <= a <= 26:
 				continue; #skip asc/dsc/mc/ic
@@ -4067,10 +4069,10 @@ class mainWindow:
 		
 		if res == gtk.PrintOperationResult.ERROR:
 			error_dialog = gtk.MessageDialog(parent,
-                                          gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                          gtk.MessageType.ERROR,
-      					  gtk.ButtonsType.CLOSE,
-      					  "Error printing:\n")
+										  gtk.DialogFlags.DESTROY_WITH_PARENT,
+										  gtk.MessageType.ERROR,
+							gtk.ButtonsType.CLOSE,
+							"Error printing:\n")
 			error_dialog.connect("response", lambda w,id: w.destroy())
 			error_dialog.show()
 			
@@ -4098,30 +4100,30 @@ class mainWindow:
 
 			#send file to print job
 			def printer_callback(print_job, data, errormsg):
-				print "printing job: %s" %(print_job.get_title())
+				print(("printing job: {}".format(print_job.get_title())))
 				if errormsg:
-					print errormsg
+					print(errormsg)
 					
 			if printer.accepts_pdf():
 				#printer accepts PDF
-				print "Printing PDF file /tmp/OAOUT.pdf"
+				print("Printing PDF file /tmp/OAOUT.pdf")
 				printjob.send(printer_callback)
 				#printjob.set_source_file("/tmp/OAOUT.pdf")
 			elif printer.accepts_ps():
 				#printer accepts PS
-				print "PS printing not made yet"
+				print("PS printing not made yet")
 			else:
 				#no format support
-				print "Printer does not support PDF or PS printing"
+				print("Printer does not support PDF or PS printing")
 			
 			gup.destroy()		
 			
 		elif res == gtk.ResponseType.APPLY:
 			#print preview button
-			print "print preview button?"
+			print("print preview button?")
 			gup.destroy()
 		else:
-			print "cancelled print"
+			print("cancelled print")
 			gup.destroy()
 
 	def doPrintBegin(self, operation, context):
@@ -4484,7 +4486,7 @@ class mainWindow:
 				i += 1
 			db.gclose()
 			self.contbox.set_model(self.contstore)
-        
+		
 			#countries
 			self.countrybox = gtk.ComboBox()
 			cell = gtk.CellRendererText()
@@ -4519,7 +4521,7 @@ class mainWindow:
 		buttonbox = gtk.HBox(False, 5)
 		table.attach(buttonbox, 1, 2, 4, 5)
  
-  		#ok button
+		  #ok button
 		button = gtk.Button(stock=gtk.STOCK_OK)
 		button.connect("clicked", self.settingsLocationSubmit)
 		button.set_flags(gtk.CAN_DEFAULT)
@@ -4836,7 +4838,7 @@ class mainWindow:
 		for i in range(len(data)):
 			sql = 'UPDATE settings_planet SET label = "%s"'%(data[i]['label'].get_text())
 			radio={"visible":0,"visible_aspect_line":0,"visible_aspect_grid":0}
-			for key,val in radio.iteritems():
+			for key,val in radio.items():
 				if data[i][key].get_active():
 					radio[key]=1
 				sql += ', %s = %s' % (key,radio[key])
@@ -4853,7 +4855,7 @@ class mainWindow:
 	""" Menu item to set color options (settingsColors,	settingsColorsSubmit) """
 	def settingsColorsReset(self, widget, id):
 		self.SCdata[id]['code'].set_text(db.defaultColors[self.SCdata[id]['key']])
-		self.SCdata[id]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(db.defaultColors[self.SCdata[id]['key']]))
+		self.SCdata[id]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(db.defaultColors[self.SCdata[id]['key']]))
 		return
 			
 	def settingsColors(self, widget):
@@ -4891,7 +4893,7 @@ class mainWindow:
 			self.SCdata[-1]['code'] = gtk.Entry(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_bg_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["zodiac_bg_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_bg_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -4917,7 +4919,7 @@ class mainWindow:
 			self.SCdata[-1]['code'] = gtk.Entry(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_radix_ring_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["zodiac_radix_ring_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_radix_ring_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -4936,7 +4938,7 @@ class mainWindow:
 			self.SCdata[-1]['code'] = gtk.Entry(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_transit_ring_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["zodiac_transit_ring_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_transit_ring_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -4954,7 +4956,7 @@ class mainWindow:
 		self.SCdata[-1]['code'] = gtk.Entry(25)
 		self.SCdata[-1]['code'].set_width_chars(10)
 		self.SCdata[-1]['code'].set_text(openAstro.colors["houses_radix_line"])
-		self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["houses_radix_line"]))
+		self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["houses_radix_line"]))
 		self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 		self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 		self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -4972,7 +4974,7 @@ class mainWindow:
 		self.SCdata[-1]['code'] = gtk.Entry(25)
 		self.SCdata[-1]['code'].set_width_chars(10)
 		self.SCdata[-1]['code'].set_text(openAstro.colors["houses_transit_line"])
-		self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["houses_transit_line"]))
+		self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["houses_transit_line"]))
 		self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 		self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 		self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -4998,7 +5000,7 @@ class mainWindow:
 			self.SCdata[-1]['code'] = gtk.Entry(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_icon_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["zodiac_icon_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_icon_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -5025,7 +5027,7 @@ class mainWindow:
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["aspect_%s"%(openAstro.aspects[i]['degree'])])
 
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["aspect_%s"%(openAstro.aspects[i]['degree'])]))
+			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["aspect_%s"%(openAstro.aspects[i]['degree'])]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -5051,7 +5053,7 @@ class mainWindow:
 			self.SCdata[-1]['code'] = gtk.Entry(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["planet_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(openAstro.colors["planet_%s"%(i)]) )
+			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["planet_%s"%(i)]) )
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
@@ -5086,7 +5088,7 @@ class mainWindow:
 		return
 	
 	def settingsColorsChanger(self, widget, count):
-		input_color = gtk.gdk.color_parse(self.SCdata[count]["code"].get_text())
+		input_color = gdk.color_parse(self.SCdata[count]["code"].get_text())
 		
 		self.colorseldlg = gtk.ColorSelectionDialog(_("Please select a color"))
 		colorsel = self.colorseldlg.colorsel
@@ -5149,9 +5151,9 @@ class mainWindow:
 						
 		self.SLdata = []
 		x=1
-		keys = openAstro.label.keys()
+		keys = list(openAstro.label.keys())
 		keys.sort()
-        	for key in keys:
+		for key in keys:
 			value=openAstro.label[key]
 			self.SLdata.append({})
 			self.SLdata[-1]['name'] = key
@@ -5340,9 +5342,9 @@ class mainWindow:
 		self.actiongroup.add_radio_actions([
 			('z80', None, '_80%', None,'80%', 0),
 			('z100', gtk.STOCK_ZOOM_100, '_100%', None,'100%', 1),
-         ('z150', None, '_150%', None,'150%', 2),
-         ('z200', None, '_200%', None,'200%', 3),
-         ], 1, self.zoom)
+		 ('z150', None, '_150%', None,'150%', 2),
+		 ('z200', None, '_200%', None,'200%', 3),
+		 ], 1, self.zoom)
 	
 		#create history actions
 		history=db.history
@@ -5356,7 +5358,7 @@ class mainWindow:
 				label='empty'
 				visible=False
 				list=[]
-			self.uimanager.add_ui(self.ui_mid_history, '/MenuBar/File/History', 'history%i'%(i), 'history%i'%(i), gtk.UI_MANAGER_MENUITEM, False)
+			self.uimanager.add_ui(self.ui_mid_history, '/MenuBar/File/History', 'history%i'%(i), 'history%i'%(i), gtk.UIManagerItemType.MENUITEM, False)
 			action=gtk.Action('history%i'%(i),label,None,False)
 			action.connect('activate',self.updateChartList,list)
 			action.set_visible(visible)			
@@ -5365,7 +5367,7 @@ class mainWindow:
 		#create quickdatabaseopen actions
 		self.DB = db.getDatabase()
 		for i in range(len(self.DB)):
-			self.uimanager.add_ui(self.ui_mid_quickopendatabase, '/MenuBar/Event/QuickOpenDatabase', 'quickopendatabase%s'%(i), 'quickopendatabase%s'%(i), gtk.UI_MANAGER_MENUITEM, False)
+			self.uimanager.add_ui(self.ui_mid_quickopendatabase, '/MenuBar/Event/QuickOpenDatabase', 'quickopendatabase%s'%(i), 'quickopendatabase%s'%(i), gtk.UIManagerItemType.MENUITEM, False)
 			action=gtk.Action('quickopendatabase%s'%(i),self.DB[i]["name"],None,False)
 			action.connect('activate',self.updateChartList,self.DB[i])
 			action.set_visible(True)
@@ -5479,9 +5481,9 @@ class mainWindow:
 			self.contbox = gtk.ComboBox()
 			self.contstore = gtk.ListStore(str,str)
 			cell = gtk.CellRendererText()
-			self.contbox.pack_start(cell)
+			self.contbox.pack_start(cell,True)
 			self.contbox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.contbox)
+			hbox.pack_start(self.contbox,True,True,True)
 			self.contbox.set_wrap_width(1)
 
 			sql = 'SELECT * FROM continent ORDER BY name ASC'
@@ -5499,31 +5501,31 @@ class mainWindow:
 				i += 1
 			db.gclose()
 			self.contbox.set_model(self.contstore)
-        
+		
 			#countries
 			self.countrybox = gtk.ComboBox()
 			cell = gtk.CellRendererText()
-			self.countrybox.pack_start(cell)
+			self.countrybox.pack_start(cell,True)
 			self.countrybox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.countrybox)
+			hbox.pack_start(self.countrybox,True,True,True)
 			self.countrybox.set_wrap_width(1) 
 			self.countrybox.connect('changed', self.eventDataChangedCountrybox)
 
 			#provinces
 			self.provbox = gtk.ComboBox()
 			cell = gtk.CellRendererText()
-			self.provbox.pack_start(cell)
+			self.provbox.pack_start(cell,True)
 			self.provbox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.provbox)
+			hbox.pack_start(self.provbox,True,True,True)
 			self.provbox.set_wrap_width(1) 
 			self.provbox.connect('changed', self.eventDataChangedProvbox)
 
 			#cities
 			self.citybox = gtk.ComboBox()
 			cell = gtk.CellRendererText()
-			self.citybox.pack_start(cell)
+			self.citybox.pack_start(cell,True)
 			self.citybox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.citybox)
+			hbox.pack_start(self.citybox,True,True,True)
 			self.citybox.set_wrap_width(2) 
 			self.citybox.connect('changed', self.eventDataChangedCitybox)
 
@@ -5531,7 +5533,7 @@ class mainWindow:
 			self.contbox.set_active(activecont)
 			
 			#add search in database
-			vbox.pack_start(hbox)
+			vbox.pack_start(hbox,True,True,True)
 			hbox=gtk.HBox(False,5)			
 			label=gtk.Label(_("Search City")+":")
 			hbox.pack_start(label,False,False,0)
@@ -5545,7 +5547,7 @@ class mainWindow:
 			hbox.pack_start(self.citysearchbutton,False,False,0)
 			label=gtk.Label("("+_("For example: London, GB")+")")
 			hbox.pack_start(label,False,False,0)
-			vbox.pack_start(hbox)
+			vbox.pack_start(hbox,True,True,True)
 
 		#Year month day entry
 		hbox = gtk.HBox(False,5)
@@ -5637,14 +5639,14 @@ class mainWindow:
 		button = gtk.Button(_('Test'),gtk.STOCK_APPLY)
 		button.connect("clicked", self.eventDataApply)
 		buttonbox.pack_start(button,False,False,0)
-  		#ok button
-  		if edit == False:
+		#ok button
+		if edit == False:
 			button = gtk.Button(stock=gtk.STOCK_OK)
 			button.connect("clicked", self.eventDataSubmit)
-			button.set_flags(gtk.CAN_DEFAULT)
+			button.set_can_default(True)
 			buttonbox.pack_start(button,False,False,0)
 			button.grab_default()
-            
+			
 		#cancel button
 		button = gtk.Button(stock=gtk.STOCK_CANCEL)
 		button.connect("clicked", lambda w: self.window2.destroy())
@@ -5741,7 +5743,7 @@ class mainWindow:
 		self.countrybox.set_model(store)
 		self.countrybox.set_active(activecountry) 
 		return
-      
+	  
 	def eventDataChangedCountrybox(self, combobox):
 		model = combobox.get_model()
 		index = combobox.get_active()
@@ -5771,7 +5773,7 @@ class mainWindow:
 		model = combobox.get_model()
 		index = combobox.get_active()
 
-		self.citylist = gtk.ListStore(str,str,str,str,str,str,str,str)
+		self.citylist = gtk.ListStore(str,float,float,str,str,str,int,str)
 		self.citylist.clear()
 		sql = 'SELECT * FROM geonames WHERE country=? AND admin1=? ORDER BY name ASC'
 		db.gquery(sql,(model[index][1],model[index][2]))
@@ -5788,6 +5790,7 @@ class mainWindow:
 			i+=1
 		db.gclose()
 		for i in range(len(list)):
+			#print(list[i])
 			self.citylist.append(list[i])
 		self.citybox.set_model(self.citylist)
 		self.citybox.set_active(activecity) 
@@ -5901,11 +5904,12 @@ class mainWindow:
 class drawSVG(gtk.DrawingArea):
 	def __init__(self):
 		super(drawSVG, self).__init__()
-		self.connect("expose_event", self.exposeEvent)
+		self.connect("configure-event", self.exposeEvent)
 
 	def setSVG(self,svg):
-		self.svg = rsvg.Handle(svg)
-		self.emit("expose-event",gtk.gdk.Event(gtk.gdk.EXPOSE))
+		#self.svg = rsvg.Handle(svg)
+		self.svg = rsvg.Handle.new_from_file(svg)
+		self.emit("configure-event",gdk.Event(gdk.EventType.EXPOSE))
 		width=self.svg.props.width*openAstro.zoom
 		height=self.svg.props.height*openAstro.zoom
 		self.set_size_request(int(width),int(height))
@@ -5913,22 +5917,24 @@ class drawSVG(gtk.DrawingArea):
 
 	def exposeEvent(self,widget,event):
 		try:
+			dprint("Creating cairo context.")
 			context = self.window.cairo_create()
+			
 		except AttributeError:
+			dprint("Already made cairo context.")
 			return True
 
 		if self.svg != None:
-
 			#set a clip region for the expose event
+			dprint("Trying to render svg now.")
 			context.rectangle(event.area.x, event.area.y,event.area.width, event.area.height)
 			context.clip()
-				
 			self.svg.render_cairo(context)
 
 #debug print function
-def dprint(str):
+def dprint(s):
 	if "--debug" in sys.argv or DEBUG:
-		print '%s' % str
+		print(('{}'.format(s)))
 
 #start the whole bunch
 if __name__ == "__main__":
