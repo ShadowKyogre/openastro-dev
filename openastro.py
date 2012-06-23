@@ -2296,8 +2296,6 @@ class openAstroInstance:
 				end=self.t_planets_degree_ut[x]
 				diff=float(self.degreeDiff(start,end))
 				#loop orbs
-				#dprint('{}, {}'.format(self.planets[i]['name'],self.planets[x]['name']))
-				#dprint('{} {}'.format(self.planets[i]['visible'],self.planets[x]['visible']))
 				if (self.planets[i]['visible'] == 1) & (self.planets[x]['visible'] == 1):	
 					for z in range(len(self.aspects)):
 						#check for personal planets and determine orb
@@ -2306,12 +2304,14 @@ class openAstroInstance:
 						else:
 							orb_before = 2.0
 						#check if we want to display this aspect	
-						if	( float(self.aspects[z]['degree']) - orb_before ) <= diff <= ( float(self.aspects[z]['degree']) + 1.0 ):
-							#print(self.aspects[z])
+						print(float(self.aspects[z]['degree'])-orb_before,diff,float(self.aspects[z]['degree']) + 1.0)
+						if (float(self.aspects[z]['degree']) - orb_before) <= diff <= (float(self.aspects[z]['degree']) + 1.0):
 							print(self.aspects[z])
 							if self.aspects[z]['visible'] == 1:
 								out = out + self.drawAspect( r , ar , self.planets_degree_ut[i] , self.t_planets_degree_ut[x] , self.colors["aspect_%s" %(self.aspects[z]['degree'])] )		
 							#aspect grid dictionary
+							#note: this will result in something /really/ ugly if used on the same day...
+							#otherwise, it is fine
 							if self.aspects[z]['visible_grid'] == 1:
 								self.atgrid.append({})
 								self.atgrid[-1]['p1']=i
