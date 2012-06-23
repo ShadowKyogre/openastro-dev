@@ -42,8 +42,8 @@ from xml.dom.minidom import parseString
 
 from gi.repository import Gtk as gtk
 from gi.repository import Gdk as gdk
+from gi.repository import Rsvg as rsvg
 import cairo
-import rsvg
 
 #internal openastro modules
 from openastromod import zonetab, geoname, importfile, dignities, timeoutsocket, swiss as ephemeris
