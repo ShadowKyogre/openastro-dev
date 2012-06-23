@@ -3173,12 +3173,14 @@ class mainWindow:
 		dialog.move(50,50)
 		self.tMTentry={}
 		dialog.vbox.pack_start(gtk.Label(_('Year')+": "),True,True,True)	
-		self.tMTentry['Y']=gtk.Entry(4)
+		self.tMTentry['Y']=gtk.Entry()
+		self.tMTentry['Y'].set_max_length(4) 
 		self.tMTentry['Y'].set_width_chars(4) 
 		self.tMTentry['Y'].set_text(str(datetime.datetime.now().year))
 		dialog.vbox.pack_start(self.tMTentry['Y'], False, False, 0)
 		dialog.vbox.pack_start(gtk.Label(_('Month')+": "),True,True,True)	
-		self.tMTentry['M']=gtk.Entry(2)
+		self.tMTentry['M']=gtk.Entry()
+		self.tMTentry['M'].set_max_length(2) 
 		self.tMTentry['M'].set_width_chars(2) 
 		self.tMTentry['M'].set_text('%02d'%(datetime.datetime.now().month))
 		dialog.vbox.pack_start(self.tMTentry['M'], False, False, 0)
@@ -3186,10 +3188,8 @@ class mainWindow:
 		
 		ret = dialog.run()
 		if ret == gtk.ResponseType.ACCEPT:
-			dialog.destroy()
 			self.tableMonthlyTimelineShow()
-		else:
-			dialog.destroy()
+		dialog.destroy()
 		return
 
 	def tableMonthlyTimelinePrint(self, pages, pdf, window, name):
@@ -3471,7 +3471,7 @@ class mainWindow:
 			scrolledwindow = gtk.ScrolledWindow()
 			scrolledwindow.add_with_viewport(draw)
 			scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
-			vbox.pack_start(scrolledwindow)
+			vbox.pack_start(scrolledwindow,True,True,True)
 		
 			self.win_TMT.add(vbox)
 			self.win_TMT.show_all()
@@ -3644,7 +3644,7 @@ class mainWindow:
 			scrolledwindow = gtk.ScrolledWindow()
 			scrolledwindow.add_with_viewport(draw)
 			scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
-			vbox.pack_start(scrolledwindow)
+			vbox.pack_start(scrolledwindow,True,True,True)
 			self.win_TCA.add(vbox)
 			self.win_TCA.show_all()		
 		return
