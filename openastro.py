@@ -2296,8 +2296,8 @@ class openAstroInstance:
 				end=self.t_planets_degree_ut[x]
 				diff=float(self.degreeDiff(start,end))
 				#loop orbs
-				dprint(self.planets[i]['name'],self.planets[x]['name'])
-				dprint(self.planets[i]['visible'],self.planets[x]['visible'])
+				#dprint('{}, {}'.format(self.planets[i]['name'],self.planets[x]['name']))
+				#dprint('{} {}'.format(self.planets[i]['visible'],self.planets[x]['visible']))
 				if (self.planets[i]['visible'] == 1) & (self.planets[x]['visible'] == 1):	
 					for z in range(len(self.aspects)):
 						#check for personal planets and determine orb
@@ -2308,6 +2308,7 @@ class openAstroInstance:
 						#check if we want to display this aspect	
 						if	( float(self.aspects[z]['degree']) - orb_before ) <= diff <= ( float(self.aspects[z]['degree']) + 1.0 ):
 							#print(self.aspects[z])
+							print(self.aspects[z])
 							if self.aspects[z]['visible'] == 1:
 								out = out + self.drawAspect( r , ar , self.planets_degree_ut[i] , self.t_planets_degree_ut[x] , self.colors["aspect_%s" %(self.aspects[z]['degree'])] )		
 							#aspect grid dictionary
@@ -3823,9 +3824,9 @@ class mainWindow:
 		self.win_OD_tvcolumn1.pack_start(cell1, True)
 		self.win_OD_tvcolumn2.pack_start(cell2, True)
 		#set the cell attributes to the listmodel column
-		self.win_OD_tvcolumn0.set_attributes(cell0, text=0)
-		self.win_OD_tvcolumn1.set_attributes(cell1, text=1)
-		self.win_OD_tvcolumn2.set_attributes(cell2, text=2)
+		self.win_OD_tvcolumn0.add_attribute(cell0, 'text', 0)
+		self.win_OD_tvcolumn1.add_attribute(cell1, 'text', 1)
+		self.win_OD_tvcolumn2.add_attribute(cell2, 'text', 2)
 		#set treeview options
 		self.win_OD_treeview.set_search_column(0)
 		self.win_OD_tvcolumn0.set_sort_column_id(0)
@@ -3836,17 +3837,17 @@ class mainWindow:
 		scrolledwindow.add(self.win_OD_treeview)
 		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.ALWAYS)
 		vbox=gtk.VBox()
-		vbox.pack_start(scrolledwindow)
+		vbox.pack_start(scrolledwindow,True,True,True)
 		hbox=gtk.HBox()		
 		#buttons
 		button = gtk.Button(stock=gtk.STOCK_CANCEL)
 		button.connect("clicked", lambda w: self.openDatabaseSelectReject())
-		hbox.pack_end(button,False)	
+		hbox.pack_end(button,False,True,True)	
 		button = gtk.Button(selectstr)
 		button.connect("clicked", lambda w: self.openDatabaseSelectReturn(type))
-		hbox.pack_end(button,False)		
+		hbox.pack_end(button,False,True,True)		
 		#display window
-		vbox.pack_start(hbox,False)
+		vbox.pack_start(hbox,False,True,True)
 		self.win_OD.add(vbox)
 		self.win_OD_treeview.set_model(listmodel)
 		self.win_OD.show_all()
@@ -4190,7 +4191,7 @@ class mainWindow:
 			data['use_geonames.org'].set_active(True)
 		
 		#house system
-		data['houses_system'] = gtk.combo_box_new_text()
+		data['houses_system'] = gtk.ComboBoxText()
 		table.attach(gtk.Label(_('Houses System')), 0, 1, 2, 3, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
 		table.attach(data['houses_system'], 1, 2, 2, 3, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		hsys={
@@ -4218,7 +4219,7 @@ class mainWindow:
 		data['houses_system'].set_active(active)
 		
 		#position calculation (geo,truegeo,topo,helio)		
-		data['postype'] = gtk.combo_box_new_text()
+		data['postype'] = gtk.ComboBoxText()
 		table.attach(gtk.Label(_('Position Calculation')), 0, 1, 4, 5, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
 		table.attach(data['postype'], 1, 2, 4, 5, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		postype={
@@ -4237,7 +4238,7 @@ class mainWindow:
 		data['postype'].set_active(active)
 
 		#chart view (traditional,european)		
-		data['chartview'] = gtk.combo_box_new_text()
+		data['chartview'] = gtk.ComboBoxText()
 		table.attach(gtk.Label(_('Chart View')), 0, 1, 6, 7, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
 		table.attach(data['chartview'], 1, 2, 6, 7, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		chartview={
@@ -4253,7 +4254,7 @@ class mainWindow:
 		data['chartview'].set_active(active)
 
 		#zodiac type (tropical, sidereal)	
-		data['zodiactype'] = gtk.combo_box_new_text()
+		data['zodiactype'] = gtk.ComboBoxText()
 		table.attach(gtk.Label(_('Zodiac Type')), 0, 1, 8, 9, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)		
 		table.attach(data['zodiactype'], 1, 2, 8, 9, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		chartview={
@@ -4269,7 +4270,7 @@ class mainWindow:
 		data['zodiactype'].set_active(active)
 		
 		#sidereal mode	
-		data['siderealmode'] = gtk.combo_box_new_text()
+		data['siderealmode'] = gtk.ComboBoxText()
 		if db.astrocfg['zodiactype'] != 'sidereal':
 			data['siderealmode'].set_sensitive(False)
 		def zodiactype_changed(button):
@@ -4330,7 +4331,7 @@ class mainWindow:
 		data['siderealmode'].set_active(active)
 		
 		#language		
-		data['language'] = gtk.combo_box_new_text()
+		data['language'] = gtk.ComboBoxText()
 		table.attach(gtk.Label(_('Language')), 0, 1, 16, 17, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		table.attach(data['language'], 1, 2, 16, 17, xoptions=gtk.AttachOptions.SHRINK, yoptions=gtk.AttachOptions.SHRINK, xpadding=10)
 		
@@ -4460,7 +4461,7 @@ class mainWindow:
 			self.geoCC = gtk.Entry(2)
 			self.geoCC.set_width_chars(2)
 			self.geoCC.set_text(openAstro.home_countrycode)
-			hbox.pack_start(self.geoCC)	
+			hbox.pack_start(self.geoCC,True,True,True)	
 			table.attach(hbox, 0, 2, 0, 1)
 		else:
 			hbox=gtk.HBox()
@@ -4471,9 +4472,9 @@ class mainWindow:
 			self.contbox = gtk.ComboBox()
 			self.contstore = gtk.ListStore(str,str)
 			cell = gtk.CellRendererText()
-			self.contbox.pack_start(cell)
+			self.contbox.pack_start(cell,True)
 			self.contbox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.contbox)
+			hbox.pack_start(self.contbox,True,True,True)
 			self.contbox.set_wrap_width(1)
 
 			sql = 'SELECT * FROM continent ORDER BY name ASC'
@@ -4493,27 +4494,27 @@ class mainWindow:
 			#countries
 			self.countrybox = gtk.ComboBox()
 			cell = gtk.CellRendererText()
-			self.countrybox.pack_start(cell)
+			self.countrybox.pack_start(cell,True)
 			self.countrybox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.countrybox)
+			hbox.pack_start(self.countrybox,True,True,True)
 			self.countrybox.set_wrap_width(1) 
 			self.countrybox.connect('changed', self.eventDataChangedCountrybox)
 
 			#provinces
 			self.provbox = gtk.ComboBox()
 			cell = gtk.CellRendererText()
-			self.provbox.pack_start(cell)
+			self.provbox.pack_start(cell,True)
 			self.provbox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.provbox)
+			hbox.pack_start(self.provbox,True,True,True)
 			self.provbox.set_wrap_width(1) 
 			self.provbox.connect('changed', self.eventDataChangedProvbox)
 
 			#cities
 			self.citybox = gtk.ComboBox()
 			cell = gtk.CellRendererText()
-			self.citybox.pack_start(cell)
+			self.citybox.pack_start(cell,True)
 			self.citybox.add_attribute(cell, 'text', 0)
-			hbox.pack_start(self.citybox)
+			hbox.pack_start(self.citybox,True,True,True)
 			self.citybox.set_wrap_width(2) 
 			self.citybox.connect('changed', self.eventDataChangedCitybox)
 
@@ -4644,15 +4645,15 @@ class mainWindow:
 		
 		#description
 		label = gtk.Label(_("Deg"))
-		table.attach(label, 1, 2, 0, 1, xoptions=gtk.FILL, xpadding=10)
+		table.attach(label, 1, 2, 0, 1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 		label = gtk.Label(_("Aspect Name"))
-		table.attach(label, 2, 3, 0, 1, xoptions=gtk.FILL, xpadding=10)
+		table.attach(label, 2, 3, 0, 1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 		label = gtk.Label(_("Visible\nin Circle"))
-		table.attach(label, 3, 4, 0, 1, xoptions=gtk.FILL, xpadding=10)
+		table.attach(label, 3, 4, 0, 1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 		label = gtk.Label(_("Visible\nin Grid"))
-		table.attach(label, 4, 5, 0, 1, xoptions=gtk.FILL, xpadding=10)
+		table.attach(label, 4, 5, 0, 1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 		label = gtk.Label(_("Orb"))
-		table.attach(label, 5, 6, 0, 1, xoptions=gtk.FILL, xpadding=10)		
+		table.attach(label, 5, 6, 0, 1, xoptions=gtk.AttachOptions.FILL, xpadding=10)		
 		
 		data = []
 		x=1
@@ -4668,21 +4669,22 @@ class mainWindow:
 			data[-1]['name'].set_max_length(25)
 			data[-1]['name'].set_width_chars(15)
 			data[-1]['name'].set_text(openAstro.aspects[i]['name'])
-			table.attach(data[-1]['icon'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(data[-1]['degree_str'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(data[-1]['name'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
+			table.attach(data[-1]['icon'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(data[-1]['degree_str'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(data[-1]['name'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 			data[-1]['visible'] = gtk.CheckButton()
 			if openAstro.aspects[i]['visible'] is 1:
 				data[-1]['visible'].set_active(True)
-			table.attach(data[-1]['visible'], 3, 4, x, x+1, xoptions=gtk.EXPAND, xpadding=2, ypadding=2)
+			table.attach(data[-1]['visible'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.EXPAND, xpadding=2, ypadding=2)
 			data[-1]['visible_grid'] = gtk.CheckButton()
 			if openAstro.aspects[i]['visible_grid'] is 1:
 				data[-1]['visible_grid'].set_active(True)
-			table.attach(data[-1]['visible_grid'], 4, 5, x, x+1, xoptions=gtk.EXPAND, xpadding=2, ypadding=2)
-			data[-1]['orb'] = gtk.Entry(4)
+			table.attach(data[-1]['visible_grid'], 4, 5, x, x+1, xoptions=gtk.AttachOptions.EXPAND, xpadding=2, ypadding=2)
+			data[-1]['orb'] = gtk.Entry()
+			data[-1]['orb'].set_max_length(4)
 			data[-1]['orb'].set_width_chars(4)
 			data[-1]['orb'].set_text(str(openAstro.aspects[i]['orb']))
-			table.attach(data[-1]['orb'], 5, 6, x, x+1, xoptions=gtk.FILL, xpadding=10)					
+			table.attach(data[-1]['orb'], 5, 6, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)					
 			x=x+1
 		
 		#make the ui layout with ok button
@@ -4858,7 +4860,7 @@ class mainWindow:
 	""" Menu item to set color options (settingsColors,	settingsColorsSubmit) """
 	def settingsColorsReset(self, widget, id):
 		self.SCdata[id]['code'].set_text(db.defaultColors[self.SCdata[id]['key']])
-		self.SCdata[id]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(db.defaultColors[self.SCdata[id]['key']]))
+		self.SCdata[id]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(db.defaultColors[self.SCdata[id]['key']]))
 		return
 			
 	def settingsColors(self, widget):
@@ -4885,187 +4887,195 @@ class mainWindow:
 		delimiter="--------------------------------------------"
 		
 		#Zodiac background colors
-		table.attach(gtk.Label(delimiter),0,4,0,1,xoptions=gtk.FILL,xpadding=10)
-		table.attach(gtk.Label(_("Zodiac Background Colors")),0,4,1,2,xoptions=gtk.FILL,xpadding=10)
-		table.attach(gtk.Label(delimiter),0,4,2,3,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,0,1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
+		table.attach(gtk.Label(_("Zodiac Background Colors")),0,4,1,2,xoptions=gtk.AttachOptions.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,2,3,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x=3	
 		for i in range(12):
 			self.SCdata.append({})
 			self.SCdata[-1]['key']="zodiac_bg_%s"%(i)
 			self.SCdata[-1]['name']=gtk.Label(openAstro.zodiac[i])
-			self.SCdata[-1]['code'] = gtk.Entry(25)
+			self.SCdata[-1]['code'] = gtk.Entry()
+			self.SCdata[-1]['code'].set_max_length(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_bg_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_bg_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["zodiac_bg_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 			self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 				
-			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 			x+=1
 		
 		#Circle and Line Colors
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(_("Circles and Lines Colors")),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(_("Circles and Lines Colors")),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
 		for i in range(3):
 			self.SCdata.append({})
 			self.SCdata[-1]['key']="zodiac_radix_ring_%s"%(i)
 			self.SCdata[-1]['name']=gtk.Label("%s %s" %(_("Radix Ring"),(i+1)) )
-			self.SCdata[-1]['code'] = gtk.Entry(25)
+			self.SCdata[-1]['code'] = gtk.Entry()
+			self.SCdata[-1]['code'].set_max_length(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_radix_ring_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_radix_ring_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["zodiac_radix_ring_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 			self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 				
-			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 			x+=1
 			
 		for i in range(4):
 			self.SCdata.append({})
 			self.SCdata[-1]['key']="zodiac_transit_ring_%s"%(i)
 			self.SCdata[-1]['name']=gtk.Label("%s %s" %(_("Transit Ring"),(i+1)) )
-			self.SCdata[-1]['code'] = gtk.Entry(25)
+			self.SCdata[-1]['code'] = gtk.Entry()
+			self.SCdata[-1]['code'].set_max_length(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_transit_ring_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_transit_ring_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["zodiac_transit_ring_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 			self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 				
-			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 			x+=1								
 		
 		self.SCdata.append({})
 		self.SCdata[-1]['key']="houses_radix_line"
 		self.SCdata[-1]['name']=gtk.Label(_("Cusp Radix"))
-		self.SCdata[-1]['code'] = gtk.Entry(25)
+		self.SCdata[-1]['code'] = gtk.Entry()
+		self.SCdata[-1]['code'].set_max_length(25)
 		self.SCdata[-1]['code'].set_width_chars(10)
 		self.SCdata[-1]['code'].set_text(openAstro.colors["houses_radix_line"])
-		self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["houses_radix_line"]))
+		self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["houses_radix_line"]))
 		self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 		self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 		self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 		self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 			
-		table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-		table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-		table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-		table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 		x+=1
 		
 		self.SCdata.append({})
 		self.SCdata[-1]['key']="houses_transit_line"
 		self.SCdata[-1]['name']=gtk.Label(_("Cusp Transit"))
-		self.SCdata[-1]['code'] = gtk.Entry(25)
+		self.SCdata[-1]['code'] = gtk.Entry()
+		self.SCdata[-1]['code'].set_max_length(25)
 		self.SCdata[-1]['code'].set_width_chars(10)
 		self.SCdata[-1]['code'].set_text(openAstro.colors["houses_transit_line"])
-		self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["houses_transit_line"]))
+		self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["houses_transit_line"]))
 		self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 		self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 		self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 		self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 			
-		table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-		table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-		table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-		table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+		table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 		x+=1		
 
 		#Zodiac icon colors
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(_("Zodiac Icon Colors")),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(_("Zodiac Icon Colors")),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
 		for i in range(12):
 			self.SCdata.append({})
 			self.SCdata[-1]['key']="zodiac_icon_%s"%(i)
 			self.SCdata[-1]['name']=gtk.Label(openAstro.zodiac[i])
-			self.SCdata[-1]['code'] = gtk.Entry(25)
+			self.SCdata[-1]['code'] = gtk.Entry()
+			self.SCdata[-1]['code'].set_max_length(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["zodiac_icon_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["zodiac_icon_%s"%(i)]))
+			self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["zodiac_icon_%s"%(i)]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 			self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 				
-			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 			x+=1			
 
 		#Aspects colors
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(_("Aspects Colors")),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(_("Aspects Colors")),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
 		for i in range(len(openAstro.aspects)):
 			self.SCdata.append({})
 			self.SCdata[-1]['key']="aspect_%s"%(openAstro.aspects[i]['degree'])
 			self.SCdata[-1]['name']=gtk.Label(openAstro.aspects[i]['name'])
-			self.SCdata[-1]['code'] = gtk.Entry(25)
+			self.SCdata[-1]['code'] = gtk.Entry()
+			self.SCdata[-1]['code'].set_max_length(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["aspect_%s"%(openAstro.aspects[i]['degree'])])
 
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["aspect_%s"%(openAstro.aspects[i]['degree'])]))
+			self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["aspect_%s"%(openAstro.aspects[i]['degree'])]))
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 			self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 				
-			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 			x+=1
 
 		#Planet colors
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(_("Planet Colors")),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(_("Planet Colors")),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
-		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.FILL,xpadding=10)
+		table.attach(gtk.Label(delimiter),0,4,x,x+1,xoptions=gtk.AttachOptions.FILL,xpadding=10)
 		x+=1
 		for i in range(len(openAstro.planets)):
 			self.SCdata.append({})
 			self.SCdata[-1]['key']="planet_%s"%(i)
 			self.SCdata[-1]['name']=gtk.Label(openAstro.planets[i]['name'])
-			self.SCdata[-1]['code'] = gtk.Entry(25)
+			self.SCdata[-1]['code'] = gtk.Entry()
+			self.SCdata[-1]['code'].set_max_length(25)
 			self.SCdata[-1]['code'].set_width_chars(10)
 			self.SCdata[-1]['code'].set_text(openAstro.colors["planet_%s"%(i)])
-			self.SCdata[-1]['code'].modify_base(gtk.STATE_NORMAL, gdk.color_parse(openAstro.colors["planet_%s"%(i)]) )
+			self.SCdata[-1]['code'].modify_base(gtk.StateType.NORMAL, gdk.color_parse(openAstro.colors["planet_%s"%(i)]) )
 			self.SCdata[-1]['button'] = gtk.Button(stock=gtk.STOCK_SELECT_COLOR)
 			self.SCdata[-1]['button'].connect("clicked", self.settingsColorsChanger, len(self.SCdata)-1)
 			self.SCdata[-1]['reset'] = gtk.Button(_("Default"))
 			self.SCdata[-1]['reset'].connect("clicked", self.settingsColorsReset, len(self.SCdata)-1)
 				
-			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.FILL, xpadding=10)
-			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['name'], 0, 1, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['code'], 1, 2, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['button'], 2, 3, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
+			table.attach(self.SCdata[-1]['reset'], 3, 4, x, x+1, xoptions=gtk.AttachOptions.FILL, xpadding=10)
 			x+=1
 		
 		#make the ui layout with ok button
@@ -5104,7 +5114,7 @@ class mainWindow:
 			g=int( output_color.green / 257 )
 			b=int( output_color.blue / 257 )
 			self.SCdata[count]["code"].set_text("#%02X%02X%02X"%(r,g,b))
-			self.SCdata[count]['code'].modify_base(gtk.STATE_NORMAL, output_color)
+			self.SCdata[count]['code'].modify_base(gtk.StateType.NORMAL, output_color)
 		self.colorseldlg.hide()
 		return
 	
