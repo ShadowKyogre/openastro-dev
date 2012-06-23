@@ -3724,9 +3724,9 @@ class mainWindow:
 		self.win_OD_tvcolumn1.pack_start(cell1, True)
 		self.win_OD_tvcolumn2.pack_start(cell2, True)
 		#set the cell attributes to the listmodel column
-		self.win_OD_tvcolumn0.set_attributes(cell0, text=0)
-		self.win_OD_tvcolumn1.set_attributes(cell1, text=1)
-		self.win_OD_tvcolumn2.set_attributes(cell2, text=2)
+		self.win_OD_tvcolumn0.add_attribute(cell0, 'text', 0)
+		self.win_OD_tvcolumn1.add_attribute(cell1, 'text', 1)
+		self.win_OD_tvcolumn2.add_attribute(cell2, 'text', 2)
 		#set treeview options
 		self.win_OD_treeview.set_search_column(0)
 		self.win_OD_tvcolumn0.set_sort_column_id(0)
@@ -3737,22 +3737,22 @@ class mainWindow:
 		scrolledwindow.add(self.win_OD_treeview)
 		scrolledwindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.ALWAYS)
 		vbox=gtk.VBox()
-		vbox.pack_start(scrolledwindow)
+		vbox.pack_start(scrolledwindow,True,True,True)
 		hbox=gtk.HBox(False,4)		
 		#buttons
 		if extraDB == None:
 			button = gtk.Button(stock=gtk.STOCK_CANCEL)
 			button.connect("clicked", lambda w: self.win_OD.destroy())
-			hbox.pack_end(button,False)	
+			hbox.pack_end(button,False,True,True)	
 			button = gtk.Button(stock=gtk.STOCK_EDIT)
 			button.connect("clicked", self.openDatabaseEdit)
-			hbox.pack_end(button,False)
+			hbox.pack_end(button,False,True,True)
 			button = gtk.Button(stock=gtk.STOCK_DELETE)
 			button.connect("clicked", self.openDatabaseDel)
-			hbox.pack_end(button,False)
+			hbox.pack_end(button,False,True,True)
 			button = gtk.Button(stock=gtk.STOCK_OPEN)
 			button.connect("clicked", self.openDatabaseOpen)
-			hbox.pack_end(button,False)	
+			hbox.pack_end(button,False,True,True)
 		else:
 			label=gtk.Label(_("Search Name")+":")
 			self.namesearch = gtk.Entry()
@@ -3771,14 +3771,14 @@ class mainWindow:
 			
 			button = gtk.Button(stock=gtk.STOCK_OPEN)
 			button.connect("clicked", self.openDatabaseOpen)
-			hbox.pack_start(button,False)
+			hbox.pack_start(button,False,True,True)
 			button = gtk.Button(stock=gtk.STOCK_CLOSE)
 			button.connect("clicked", lambda w: self.win_OD.destroy())
-			hbox.pack_start(button,False)			
+			hbox.pack_start(button,False,True,True)
 			
 		#display window
 		self.win_OD_treeview.connect("row-activated", lambda w,e,f: self.openDatabaseOpen(w))
-		vbox.pack_start(hbox,False)
+		vbox.pack_start(hbox,False,True,True)
 		self.win_OD.add(vbox)
 		self.win_OD_treeview.set_model(self.listmodel)
 		self.win_OD.show_all()
