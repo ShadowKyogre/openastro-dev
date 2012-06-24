@@ -18,7 +18,7 @@
 """
 
 #debug
-VERSION='1.1.25'
+VERSION='1.1.26'
 LOCAL=False
 DEBUG=True
 
