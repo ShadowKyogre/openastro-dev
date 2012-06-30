@@ -32,7 +32,7 @@ import swisseph as swe
 class ephData:
 	def __init__(self,year,month,day,hour,geolon,geolat,altitude,planets,zodiac,openastrocfg,houses_override=None):
 		#ephemeris path (default "/usr/share/swisseph:/usr/local/share/swisseph")
-		swe.set_ephe_path(ephe_path)
+		#swe.set_ephe_path(ephe_path)
 		
 		#basic location		
 		self.jul_day_UT=swe.julday(year,month,day,hour)

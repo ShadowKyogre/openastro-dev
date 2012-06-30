@@ -24,7 +24,7 @@ DEBUG=True
 
 #basics
 import math, sys, os.path, datetime, socket, gettext, codecs, webbrowser
-
+import tempfile
 #copyfile
 from shutil import copyfile
 
@@ -50,7 +50,7 @@ from openastromod import zonetab, geoname, importfile, dignities, timeoutsocket,
 
 #directories
 DATADIR=os.path.join(sys.prefix,'share','openastro.org')
-TMPDIR='/tmp'
+TMPDIR=tempfile.gettempdir()
 
 #Translations
 LANGUAGES_LABEL={
@@ -78,10 +78,15 @@ LANGUAGES_LABEL={
 			"sv":"Svenska",
 			"ta":"தமிழ்"}
 
+local_trans = os.path.join(sys.path[0],'locale')
+sys_trans = os.path.join(DATADIR,'locale')
 if LOCAL:
-	TDomain = './locale'
+	TDomain = sys_trans
 else:
-	TDomain = os.path.join(DATADIR,'locale')
+	if os.path.exists(sys_trans):
+		TDomain = sys_trans
+	else:
+		TDomain = local_trans
 
 LANGUAGES=list(LANGUAGES_LABEL.keys())
 TRANSLATION={}

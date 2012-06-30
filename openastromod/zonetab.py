@@ -9,6 +9,15 @@ see http://www.twinsun.com/tz/tz-link.htm ,
 import re, struct, math
 from datetime import datetime
 from dateutil.tz import tzfile
+from dateutil import zoneinfo
+from os import path
+import sys
+
+def get_zonetab(p):
+	if path.exists(p):
+		return p
+	else:
+		return path.join(sys.path[0],'zone.tab')
 
 def nearest_tz(lat, lon, zones):
     """
@@ -46,7 +55,7 @@ def distance(lat_1, long_1, lat_2, long_2):
         * (math.sin(dlong / 2))**2
     return 2 * math.asin(min(1, math.sqrt(a)))
         
-def timezones(zonetab="/usr/share/zoneinfo/zone.tab",
+def timezones(zonetab=get_zonetab("/usr/share/zoneinfo/zone.tab"),
               exclude=[]):
     """iterate over timezones in zone.tab; yield (country, (lat, lon), name)
 
@@ -66,16 +75,14 @@ def timezones(zonetab="/usr/share/zoneinfo/zone.tab",
                 yield country, latlong(coords), tz
 
 
-def stdtime(tz, year, month, day, hour, min, sec ,
-	    zoneinfo="/usr/share/zoneinfo"
-	    ):
+def stdtime(tz, year, month, day, hour, min, sec):
     """Use /usr/share/zoneinfo to interpret a time in a timezone.
     
     >>> stdtime("America/Chicago", "2007-04-02T21:53:27")
     '2007-04-02T21:53:27-05:00'
     """
     return datetime(year, month, day, hour, min, sec,
-                    tzinfo=tzfile("%s/%s" % (zoneinfo, tz))
+                    tzinfo=zoneinfo.gettz("%s" % (tz))
                     )
     
 
