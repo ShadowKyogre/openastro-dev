@@ -81,7 +81,7 @@ LANGUAGES_LABEL={
 local_trans = os.path.join(sys.path[0],'locale')
 sys_trans = os.path.join(DATADIR,'locale')
 if LOCAL:
-	TDomain = sys_trans
+	TDomain = local_trans
 else:
 	if os.path.exists(sys_trans):
 		TDomain = sys_trans
