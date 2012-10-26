@@ -9,8 +9,6 @@ f.close()
 
 if 'build' in sys.argv or 'install' in sys.argv:
 	instdir = os.path.dirname(os.path.abspath(__file__))
-	os.system('make clean')
-	os.system('make libswe.a')
 	os.chdir(instdir)
 
 f=glob.glob('locale/*')
